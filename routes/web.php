@@ -13,7 +13,6 @@ Route::get('/', function () {
 
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/tasks', [TaskController::class, 'index']);
-Route::get('/projects', [ProjectController::class, 'index']);
 Route::get('/resources', [ResourceController::class, 'index']);
 
 Route::get('dashboard', function () {

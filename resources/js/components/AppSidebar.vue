@@ -4,7 +4,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookmarkCheck, BriefcaseBusiness, Building, HardDrive, LayoutGrid } from 'lucide-vue-next';
+import { BriefcaseBusiness, Building, HardDrive, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -14,20 +14,16 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Services',
+        title: 'Services et membres',
         href: '/services',
         icon: Building,
     },
     {
-        title: 'Tâches ',
+        title: 'Tâches et projets ',
         href: '/tasks',
         icon: BriefcaseBusiness,
     },
-    {
-        title: 'Projets ',
-        href: '/projects',
-        icon: BookmarkCheck,
-    },
+
     {
         title: 'ressources',
         href: '/resources',
