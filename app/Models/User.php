@@ -3,9 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Collection;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -21,7 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'type'
+        'role'
     ];
 
     /**
@@ -47,7 +48,24 @@ class User extends Authenticatable
         ];
     }
 
-    public function create(array $data) {
-        User::create($data);
+    public function service() {
+        return $this->belongsTo(Service::class);
     }
+
+     /**
+     * Scope : retourne uniquement les infos de base d'un utilisateur
+     */
+    public function scopeWithBasicInfo($query)
+    {
+        return $query->select('id', 'name', 'email', 'role', 'service_id');
+    }
+
+    /**
+     * Scope : charge le service avec uniquement son nom
+     */
+    public function scopeWithServiceName($query)
+    {
+        return $query->with('service:id,name');
+    }
+
 }

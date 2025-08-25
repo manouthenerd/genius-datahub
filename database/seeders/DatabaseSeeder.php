@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
 use App\Models\Service;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -23,17 +22,11 @@ class DatabaseSeeder extends Seeder
             ]),
             'name'              => 'Test User',
             'email'             => 'test@gmail.com',
-            'type'              => 'moderator',
+            'role'              => 'admin',
             'password'          => Hash::make('password'),
             'email_verified_at' => now()
         ]);
 
-        Admin::factory()->create([
-            'name'              => 'Admin User',
-            'email'             => 'admin@gmail.com',
-            'password'          => Hash::make('password'),
-            'email_verified_at' => now()
-        ]);
 
         Service::factory()->create([
             'name' => "service informatique"

@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\UserFormRequest;
+use App\Models\User;
 
 class UserController extends Controller
 {
-    public function store() {
+    public function store(UserFormRequest $request) {
+        
+        $user = User::create([
+           
+        ]);
         
     }
 }

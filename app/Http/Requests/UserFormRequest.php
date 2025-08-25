@@ -13,7 +13,7 @@ class UserFormRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->is_admin || Auth::user()->type == 'moderator';
+        return true;
     }
 
     /**
@@ -26,7 +26,7 @@ class UserFormRequest extends FormRequest
         return [
             'name' => ['string', 'required', 'min:3'],
             'email' => ['email', 'required', 'unique:users,email'],
-            'type' => ['required', Rule::in(['moderator', 'member'])],
+            'role' => ['required', Rule::in(['moderator', 'member', 'admin'])],
             'service' => ['required', 'exists:services,id'],
         ];
     }

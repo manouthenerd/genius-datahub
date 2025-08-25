@@ -21,6 +21,7 @@ import {
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import SelectInput from '@/components/SelectInput.vue';
 import Label from '@/components/ui/label/Label.vue';
+import InputError from '@/components/InputError.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -31,9 +32,29 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const props = defineProps({
     users: Array,
+    services: Array
 })
 
-console.log(props.users)
+console.log(props.services, props.users)
+
+
+function getUserRole(role: string): string {
+
+    switch (role) {
+
+        case "admin":
+            return "admin";
+            break;
+
+        case "moderator":
+            return "modérateur"
+            break;
+
+        default:
+            return "membre"
+    }
+
+}
 </script>
 
 <template>
@@ -64,20 +85,21 @@ console.log(props.users)
                                     Ajouter un nouveau membre à ceux déjà existant dans un service
                                 </DialogDescription>
                             </DialogHeader>
-                            <Form disableWhileProcessing className="inert:opacity-50 inert:pointer-events-none"
-                                action="/test" method="POST">
+                            <Form action="/test" method="POST" v-slot="{errors, processing}">
                                 <div class="grid gap-4 py-4">
                                     <div class="grid gap-1">
                                         <Label for="name">
                                             Nom & prénoms
                                         </Label>
                                         <Input id="name" name="name" class="bg-white" />
+                                        <InputError :message="errors.name"/>
                                     </div>
                                     <div class="grid gap-1">
                                         <Label for="email">
                                             Adresse email
                                         </Label>
                                         <Input id="email" name="email" class="bg-white" />
+                                        <InputError :message="errors.email"/>
                                     </div>
                                     <div class="grid gap-1">
                                         <Label for="type">
@@ -85,22 +107,24 @@ console.log(props.users)
                                         </Label>
 
                                         <SelectInput name="service" placeholder="Choix du service">
-                                            <SelectItem value="service communication">
-                                                Service communication
+                                            <SelectItem v-for="service in props.services" :value="service.id">
+                                                {{service.name}}
                                             </SelectItem>
-                                            <SelectItem value="service technique">
-                                                Service technique
-                                            </SelectItem>
+                                            
                                         </SelectInput>
-
+                                        <InputError :message="errors.service"/>
 
                                     </div>
+
                                     <div class="grid gap-1">
-                                        <Label for="type">
-                                            Type d'utilisateur
+                                        <Label for="role">
+                                            Type utilisateur
                                         </Label>
 
-                                        <SelectInput name="type" placeholder="Choisir le type d'utilisateur">
+                                        <SelectInput name="role" placeholder="Choisir le type d'utilisateur">
+                                            <SelectItem value="admin">
+                                                Admin
+                                            </SelectItem>
                                             <SelectItem value="moderator">
                                                 Modérateur
                                             </SelectItem>
@@ -108,12 +132,11 @@ console.log(props.users)
                                                 Membre
                                             </SelectItem>
                                         </SelectInput>
-
-
+                                        <InputError :message="errors.role"/>
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit">
+                                    <Button :disabled="processing" type="submit">
                                         Sauvegarder
                                     </Button>
                                 </DialogFooter>
@@ -146,7 +169,8 @@ console.log(props.users)
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="user in props.users" :key="user.email"   class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <tr v-for="user in props.users" :key="user.email"
+                                    class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ user.name }}
@@ -159,7 +183,7 @@ console.log(props.users)
                                         {{ user.service.name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ user.type == 'moderator' ? 'Modérateur' : 'Membre' }}
+                                        {{ getUserRole(user.role) }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <ActionOption />
@@ -208,11 +232,8 @@ console.log(props.users)
                                         </Label>
 
                                         <SelectInput name="service_name" placeholder="Choix du service">
-                                            <SelectItem value="service communication">
-                                                Service communication
-                                            </SelectItem>
-                                            <SelectItem value="service technique">
-                                                Service technique
+                                            <SelectItem v-for="user in props.users" :value="user.id">
+                                                {{ user.name }}
                                             </SelectItem>
                                         </SelectInput>
 
@@ -253,10 +274,10 @@ console.log(props.users)
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <tr v-for="service in props.services" class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Service Technique
+                                        {{ service.name }}
                                     </th>
                                     <td class="px-6 py-4">
                                         <AvatarGroup />
