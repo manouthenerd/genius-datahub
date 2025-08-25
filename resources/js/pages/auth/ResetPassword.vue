@@ -17,8 +17,8 @@ const inputEmail = ref(props.email);
 </script>
 
 <template>
-    <AuthLayout title="Reset password" description="Please enter your new password below">
-        <Head title="Reset password" />
+    <AuthLayout title="Réintialisation du mot de passe" description="Veuillez définir votre mot de passe">
+        <Head title="Réintialisation du mot de passe" />
 
         <Form
             method="post"
@@ -29,13 +29,13 @@ const inputEmail = ref(props.email);
         >
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="email">Email</Label>
+                    <Label for="email">Adresse email</Label>
                     <Input id="email" type="email" name="email" autocomplete="email" v-model="inputEmail" class="block w-full mt-1" readonly />
                     <InputError :message="errors.email" class="mt-2" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password">Password</Label>
+                    <Label for="password">Mot de passe</Label>
                     <Input
                         id="password"
                         type="password"
@@ -43,27 +43,27 @@ const inputEmail = ref(props.email);
                         autocomplete="new-password"
                         class="block w-full mt-1"
                         autofocus
-                        placeholder="Password"
+                        placeholder="Votre mot de passe"
                     />
                     <InputError :message="errors.password" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation"> Confirm Password </Label>
+                    <Label for="password_confirmation"> Confirmation du mot de passe </Label>
                     <Input
                         id="password_confirmation"
                         type="password"
                         name="password_confirmation"
                         autocomplete="new-password"
                         class="block w-full mt-1"
-                        placeholder="Confirm password"
+                        placeholder="Confirmer le mot de passe"
                     />
                     <InputError :message="errors.password_confirmation" />
                 </div>
 
                 <Button type="submit" class="w-full mt-4" :disabled="processing">
                     <LoaderCircle v-if="processing" class="w-4 h-4 animate-spin" />
-                    Reset password
+                    Réintialiser le mot de passe
                 </Button>
             </div>
         </Form>

@@ -2,47 +2,124 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import { Award, Plus } from 'lucide-vue-next';
+import { Head, Form } from '@inertiajs/vue3';
+import { Plus } from 'lucide-vue-next';
 import AvatarGroup from '@/components/AvatarGroup.vue';
 import ActionOption from '@/components/ActionOption.vue';
+import Input from '@/components/ui/input/Input.vue';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTrigger,
+    DialogTitle,
+    DialogFooter,
+
+} from '@/components/ui/dialog';
+
+import SelectItem from '@/components/ui/select/SelectItem.vue';
+import SelectInput from '@/components/SelectInput.vue';
+import Label from '@/components/ui/label/Label.vue';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Services',
+        title: 'Services et membres',
         href: '/services',
     },
 ];
+
+const props = defineProps({
+    users: Array,
+})
+
+console.log(props.users)
 </script>
 
 <template>
 
-    <Head title="Services" />
+
+    <Head title="Services et membres" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <div class="grid auto-rows-min">
 
-                <div class="p-1 space-y-2 border border-slate-200 text-xs rounded shadow bg-[#c6e4fe] text-black/90">
-                    <p class="flex items-center uppercase font-bold">
-                        <Award :size="18" />
-                        Important
-                    </p>
-                    <p class="ml-1 text-[#000000e3]">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nemo, impedit debitis quaerat ipsa
-                        architecto repellendus aliquam quibusdam laudantium iste laborum odio ut. Alias expedita minus
-                        nulla veniam voluptate sed, magni dolorum consequatur magnam explicabo, delectus cupiditate
-                        dicta illo iure quaerat qui ratione debitis blanditiis asperiores optio quod quas nemo.
-                    </p>
-                </div>
-
-            </div>
+            <!-- User dialog box -->
             <div class="flex-1">
                 <div class="flex justify-between items-center">
-                    <p class="text-gray-400 text-xs">Services actuels</p>
-                    <Button variant="ghost">
-                        <Plus />
-                        Nouveau service
-                    </Button>
+                    <p class="text-gray-400 text-xs">Membres actuels</p>
+                    <Dialog>
+                        <DialogTrigger>
+                            <Button variant="ghost">
+                                <Plus />
+                                Nouveau membre
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>
+                                    Nouveau membre
+                                </DialogTitle>
+                                <DialogDescription>
+                                    Ajouter un nouveau membre à ceux déjà existant dans un service
+                                </DialogDescription>
+                            </DialogHeader>
+                            <Form disableWhileProcessing className="inert:opacity-50 inert:pointer-events-none"
+                                action="/test" method="POST">
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid gap-1">
+                                        <Label for="name">
+                                            Nom & prénoms
+                                        </Label>
+                                        <Input id="name" name="name" class="bg-white" />
+                                    </div>
+                                    <div class="grid gap-1">
+                                        <Label for="email">
+                                            Adresse email
+                                        </Label>
+                                        <Input id="email" name="email" class="bg-white" />
+                                    </div>
+                                    <div class="grid gap-1">
+                                        <Label for="type">
+                                            Service à intégrer
+                                        </Label>
+
+                                        <SelectInput name="service" placeholder="Choix du service">
+                                            <SelectItem value="service communication">
+                                                Service communication
+                                            </SelectItem>
+                                            <SelectItem value="service technique">
+                                                Service technique
+                                            </SelectItem>
+                                        </SelectInput>
+
+
+                                    </div>
+                                    <div class="grid gap-1">
+                                        <Label for="type">
+                                            Type d'utilisateur
+                                        </Label>
+
+                                        <SelectInput name="type" placeholder="Choisir le type d'utilisateur">
+                                            <SelectItem value="moderator">
+                                                Modérateur
+                                            </SelectItem>
+                                            <SelectItem value="member">
+                                                Membre
+                                            </SelectItem>
+                                        </SelectInput>
+
+
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">
+                                        Sauvegarder
+                                    </Button>
+                                </DialogFooter>
+                            </Form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
                 <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
 
@@ -55,13 +132,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         Nom
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        Membres
+                                        Email
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        Chef de service
+                                        Service
                                     </th>
                                     <th scope="col" class="px-6 py-3">
-                                        Date de création
+                                        Type
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         <span class="sr-only">Edit</span>
@@ -69,22 +146,23 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <tr v-for="user in props.users" :key="user.email"   class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                     <th scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                        Service Technique
+                                        {{ user.name }}
                                     </th>
+
                                     <td class="px-6 py-4">
-                                        <AvatarGroup/>
+                                        {{ user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        Jhon Doe
+                                        {{ user.service.name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        10/03/2024
+                                        {{ user.type == 'moderator' ? 'Modérateur' : 'Membre' }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <ActionOption/>
+                                        <ActionOption />
                                     </td>
                                 </tr>
 
@@ -94,13 +172,61 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 </div>
             </div>
+
+            <!-- Service dialog box -->
             <div class="flex-1">
                 <div class="flex justify-between items-center">
                     <p class="text-gray-400 text-xs">Services actuels</p>
-                    <Button variant="ghost">
-                        <Plus />
-                        Nouveau service
-                    </Button>
+                    <Dialog>
+                        <DialogTrigger>
+                            <Button variant="ghost">
+                                <Plus />
+                                Nouveau service
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>
+                                    Nouveau service
+                                </DialogTitle>
+                                <DialogDescription>
+                                    Ajouter un nouveau service aux services existant
+                                </DialogDescription>
+                            </DialogHeader>
+                            <Form action="/test" method="POST">
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid">
+                                        <Label for="service_name">
+                                            Nom du service
+                                        </Label>
+                                        <Input id="service_name" name="service_name" class="bg-white" />
+                                    </div>
+
+                                    <div class="grid">
+                                        <Label for="type">
+                                            Modérateur du service
+                                        </Label>
+
+                                        <SelectInput name="service_name" placeholder="Choix du service">
+                                            <SelectItem value="service communication">
+                                                Service communication
+                                            </SelectItem>
+                                            <SelectItem value="service technique">
+                                                Service technique
+                                            </SelectItem>
+                                        </SelectInput>
+
+
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">
+                                        Enregistrer
+                                    </Button>
+                                </DialogFooter>
+                            </Form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
                 <div class="rounded-xl bg-zinc-50 border border-sidebar-border/70 dark:border-sidebar-border">
 
@@ -110,7 +236,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <thead class="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">
-                                        Nom
+                                        Service
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         Membres
@@ -133,7 +259,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         Service Technique
                                     </th>
                                     <td class="px-6 py-4">
-                                        <AvatarGroup/>
+                                        <AvatarGroup />
                                     </td>
                                     <td class="px-6 py-4">
                                         Jhon Doe
@@ -142,7 +268,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                         10/03/2024
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <ActionOption/>
+                                        <ActionOption />
                                     </td>
                                 </tr>
 

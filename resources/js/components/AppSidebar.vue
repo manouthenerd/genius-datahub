@@ -5,7 +5,6 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { BriefcaseBusiness, Building, HardDrive, LayoutGrid } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
@@ -40,7 +39,9 @@ const mainNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                        <div>
+                            <img class="w-[150px]" src="image/logo-genius.png" alt="Logo de l'entreprise">
+                        </div>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
