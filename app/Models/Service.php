@@ -17,4 +17,5 @@ class Service extends Model
     public function scopeWithName($query) {
         return $query->select('id', 'name');
     }
+
 }

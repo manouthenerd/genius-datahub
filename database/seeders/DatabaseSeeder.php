@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'role'              => 'admin',
             'password'          => Hash::make('password'),
             'email_verified_at' => now()
-        ]);
+        ]); 
 
 
         Service::factory()->create([

@@ -13,12 +13,14 @@ Route::middleware(["auth"])->group(function () {
     Route::get('/', function () {})->name('home');
     Route::redirect('/', '/dashboard');
 
-    Route::get('services', [ServiceController::class, 'index']);
-    Route::get('tasks', [TaskController::class, 'index']);
+    Route::get('services',  [ServiceController::class, 'index']);
+    Route::get('tasks',     [TaskController::class, 'index']);
     Route::get('resources', [ResourceController::class, 'index']);
 
-Route::post('test', [UserController::class, 'store']);
-
+    Route::post('users', [UserController::class, 'store'])->name('create-user');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('show-user');
+    Route::put('users', [UserController::class, 'update'])->name('update-user');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('delete-user');
 });
 
 Route::get('dashboard', function () {
