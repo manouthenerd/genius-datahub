@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Form } from '@inertiajs/vue3';
-import { Plus } from 'lucide-vue-next';
+import { Plus, Ellipsis } from 'lucide-vue-next';
 import AvatarGroup from '@/components/AvatarGroup.vue';
 import ActionOption from '@/components/ActionOption.vue';
 import Input from '@/components/ui/input/Input.vue';
@@ -53,6 +53,9 @@ function getUserRole(role: string): string {
             return "membre"
     }
 }
+
+const usersWithMemberRole = props.users?.filter(user => user.role == "member")
+
 </script>
 
 <template>
@@ -90,9 +93,9 @@ function getUserRole(role: string): string {
                                         succès !</p>
                                 </Transition>
                             </div>
-                            <Form :action="route('create-user')" method="POST" v-slot="{ errors, processing }"
+                            <Form :action="route('users.create')" method="POST" v-slot="{ errors, processing }"
                                 :reset-on-success="['name', 'email']">
-                                <div class="grid gap-4 py-4">
+                                <div class="grid gap-4 py-2">
                                     <div class="grid gap-1">
                                         <Label for="name">
                                             Nom & prénoms
@@ -150,13 +153,13 @@ function getUserRole(role: string): string {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div class="rounded-xl bg-zinc-50 border border-sidebar-border/70 dark:border-sidebar-border">
-
+                <div class="rounded-xl bg-white border border-sidebar-border/70 dark:border-sidebar-border">
 
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                                <thead
+                                    class="text-xs bg-blue-950 text-white sticky top-0 sticky-top  uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
                                             Nom
@@ -177,26 +180,24 @@ function getUserRole(role: string): string {
                                 </thead>
                                 <tbody>
                                     <tr v-for="user in props.users" :key="user.email"
-                                        class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                        class="border-y cursor-pointer hover:bg-slate-200 transition-all dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                         <th scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ user.name }}
                                         </th>
 
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
                                             {{ user.email }}
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
                                             {{ user.service.name }}
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
                                             {{ getUserRole(user.role) }}
                                         </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <ActionOption 
-                                                :edit-link="`users/${user.id}`" 
-                                                :delete-link="`users/${user.id}`" 
-                                            />
+                                        <td class="px-6 py-2 text-right">
+                                            <ActionOption :edit-link="route('users.edit', user.id)"
+                                                :delete-link="route('users.destroy', user.id)" />
                                         </td>
                                     </tr>
 
@@ -228,44 +229,49 @@ function getUserRole(role: string): string {
                                     Ajouter un nouveau service aux services existant
                                 </DialogDescription>
                             </DialogHeader>
-                            <Form action="/test" method="POST">
-                                <div class="grid gap-4 py-4">
-                                    <div class="grid">
+                            <Form :action="route('services.create')" method="POST" v-slot="{ errors, processing }">
+                                <div class="grid gap-4 py-2">
+                                    <div class="grid space-y-2">
                                         <Label for="service_name">
                                             Nom du service
                                         </Label>
-                                        <Input id="service_name" name="service_name" class="bg-white" />
+                                        <Input id="service_name" name="service_name" class="bg-white" required />
+                                        <InputError :message="errors.service_name" />
                                     </div>
 
-                                    <div class="grid">
+                                    <div class="grid space-y-2">
                                         <Label for="type">
                                             Modérateur du service
                                         </Label>
 
-                                        <SelectInput name="service_name" placeholder="Choix du service">
-                                            <SelectItem v-for="user in props.users" :value="user.id">
+                                        <SelectInput name="service_moderator" placeholder="Choix du modérateur"
+                                            required>
+                                            <SelectItem v-for="user in usersWithMemberRole" :value="user.id">
                                                 {{ user.name }}
                                             </SelectItem>
                                         </SelectInput>
-
-
+                                        <InputError :message="errors.service_moderator" />
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit">
-                                        Enregistrer
+                                    <Button :disabled="processing" type="submit"
+                                        class=" bg-[#0168a6] hover:opacity-80 hover:bg-[#0168a6]">
+                                        <Loader v-if="processing" class="animate-spin w-4 h-4" />
+                                        Sauvegarder
                                     </Button>
                                 </DialogFooter>
                             </Form>
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div class="rounded-xl bg-zinc-50 border border-sidebar-border/70 dark:border-sidebar-border">
+                <div class="rounded-xl bg-white border border-sidebar-border/70 dark:border-sidebar-border">
 
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+                                <!-- TODO Faire passer les avatars en dessous du thead -->
+                                <thead
+                                    class="text-xs bg-blue-950 sticky top-0 sticky-top   text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">
                                             Service
@@ -274,7 +280,7 @@ function getUserRole(role: string): string {
                                             Membres
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            Chef de service
+                                            Modérateur
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Date de création
@@ -286,22 +292,27 @@ function getUserRole(role: string): string {
                                 </thead>
                                 <tbody>
                                     <tr v-for="service in props.services" :key="service.id"
-                                        class="border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                        class="border-y cursor-pointer hover:bg-slate-200 transition-all dark:bg-gray-800 dark:border-gray-700 border-gray-200">
                                         <th scope="row"
-                                            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                             {{ service.name }}
                                         </th>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
                                             <AvatarGroup />
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
+                                            <!-- TODO Récupérer le modérateur du service -->
                                             Jhon Doe
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="px-6 py-2">
                                             10/03/2024
                                         </td>
-                                        <td class="px-6 py-4 text-right">
-                                            <ActionOption />
+                                        <td class="px-6 py-2 text-right">
+                                            <!-- 
+                                                Ajouter un Dialog pour la modification ainsi 
+                                                que la suppression directement
+                                            -->
+                                            <Ellipsis :size="16" color="black"/>
                                         </td>
                                     </tr>
 

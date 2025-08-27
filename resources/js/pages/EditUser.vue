@@ -4,7 +4,7 @@
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <Form :action="route('update-user')" method="put" class="bg-white p-4 rounded max-w-[540px]"
+            <Form :action="route('users.update')" method="put" class="bg-white p-4 rounded max-w-[540px]"
                 v-slot="{ errors, processing }" :disable-while-processing="true" setDefaultsOnSuccess>
                 <!-- Inject user ID -->
                 <input type="hidden" name="user_id" :value="props.user.id">

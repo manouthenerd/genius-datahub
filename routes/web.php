@@ -17,10 +17,14 @@ Route::middleware(["auth"])->group(function () {
     Route::get('tasks',     [TaskController::class, 'index']);
     Route::get('resources', [ResourceController::class, 'index']);
 
-    Route::post('users', [UserController::class, 'store'])->name('create-user');
-    Route::get('users/{id}', [UserController::class, 'show'])->name('show-user');
-    Route::put('users', [UserController::class, 'update'])->name('update-user');
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('delete-user');
+    Route::post('users', [UserController::class, 'store'])->name('users.create');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('users.edit');
+    Route::put('users', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::post('services', [ServiceController::class, 'store'])->name('services.create');
+    Route::put('services', [ServiceController::class, 'update'])->name('services.update');
+    Route::delete('services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
 
 Route::get('dashboard', function () {

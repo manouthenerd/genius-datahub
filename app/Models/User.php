@@ -58,7 +58,7 @@ class User extends Authenticatable
      */
     public function scopeWithBasicInfo($query)
     {
-        return $query->select('id', 'name', 'email', 'role', 'service_id');
+        return $query->select('id', 'name', 'email', 'role', 'service_id')->where('role', '<>', 'admin');
     }
 
     /**

@@ -33,11 +33,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <!-- Box 1 -->
                 <div class="grid">
                     <p class="text-gray-400 text-xs">Projets</p>
-                    <div class="h-[100px] bg-blue-50 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div class="h-[100px] bg-orange-200 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <div class="flex justify-between items-center">
                             <p class="text-2xl">06 Projets</p>
                             <Link>
-                            <ArrowUpRight color="#0074B8" />
+                            <ArrowUpRight color="#FF6900" />
                             </Link>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
@@ -52,7 +52,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <!-- Box 2 -->
                 <div class="grid">
                     <p class="text-gray-400 text-xs">Tâches</p>
-                    <div class="h-[100px] bg-blue-100 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div class="h-[100px] bg-blue-50 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <div class="flex justify-between items-center">
                             <p class="text-2xl">120 tâches</p>
                             <Link>
@@ -90,7 +90,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </div>
             </div>
-            <div class="flex-1 bg-zinc-100">
+            <div class="flex-1 bg-white">
                 <p class="text-gray-400 text-xs">Stats générales</p>
                 <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <BarChart :colors="['black', '#0074B8']" :data="data" index="name"

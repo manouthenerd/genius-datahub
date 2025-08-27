@@ -10,6 +10,14 @@ class Service extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+
+    protected $fillable = ['name'];
+
     public function users(): HasMany {
         return $this->hasMany(User::class);
     }
