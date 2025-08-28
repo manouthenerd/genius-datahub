@@ -12,9 +12,10 @@ class ServiceController extends Controller
 {
     public function index()
     {
+
         return Inertia::render('Service', [
             'users' => User::withBasicInfo()->withServiceName()->get(),
-            'services' => Service::withName()->get(),
+            'services' => Service::withModerator(),
         ]);
     }
 

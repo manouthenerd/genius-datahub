@@ -2,8 +2,8 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Form } from '@inertiajs/vue3';
-import { Plus, Ellipsis } from 'lucide-vue-next';
+import { Head, Form, Link } from '@inertiajs/vue3';
+import { Plus, Edit } from 'lucide-vue-next';
 import AvatarGroup from '@/components/AvatarGroup.vue';
 import ActionOption from '@/components/ActionOption.vue';
 import Input from '@/components/ui/input/Input.vue';
@@ -24,6 +24,8 @@ import Label from '@/components/ui/label/Label.vue';
 import InputError from '@/components/InputError.vue';
 import { Loader } from 'lucide-vue-next';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { dateFormat } from '@/composables/useDateFormat';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -298,21 +300,18 @@ const usersWithMemberRole = props.users?.filter(user => user.role == "member")
                                             {{ service.name }}
                                         </th>
                                         <td class="px-6 py-2">
-                                            <AvatarGroup />
+                                            <AvatarGroup :counts="service.counts" />
                                         </td>
                                         <td class="px-6 py-2">
-                                            <!-- TODO Récupérer le modérateur du service -->
-                                            Jhon Doe
+                                            {{ service.moderator }}
                                         </td>
                                         <td class="px-6 py-2">
-                                            10/03/2024
+                                            {{ dateFormat(service.created_at) }}
                                         </td>
                                         <td class="px-6 py-2 text-right">
-                                            <!-- 
-                                                Ajouter un Dialog pour la modification ainsi 
-                                                que la suppression directement
-                                            -->
-                                            <Ellipsis :size="16" color="black"/>
+                                            <Link class="group">
+                                                <Edit class=" group-hover:stroke-[#0074B8]" :size="15"/>
+                                            </Link>
                                         </td>
                                     </tr>
 

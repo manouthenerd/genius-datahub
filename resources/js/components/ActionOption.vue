@@ -1,8 +1,8 @@
 <template>
     <Popover class="mr-4 w-[100px]">
         <PopoverTrigger>
-            <Button variant="link" class="cursor-pointer">
-                <Ellipsis />
+            <Button variant="link" class="cursor-pointer group">
+                <Ellipsis class="group-hover:stroke-[#0074B8]" />
             </Button>
         </PopoverTrigger>
         <PopoverContent>
