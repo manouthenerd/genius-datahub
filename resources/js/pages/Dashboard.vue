@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Progress } from '@/components/ui/progress';
-import { BarChart } from "@/components/ui/chart-bar"
-import { ArrowUpRight, Building, FolderClosedIcon, FileArchiveIcon } from 'lucide-vue-next';
-
-const data = [
-    { name: "Jan", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Feb", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Mar", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Apr", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "May", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Jun", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Jul", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-]
+import { ArrowUpRight, Building, FolderClosedIcon, FileArchiveIcon, UsersRound } from 'lucide-vue-next';
+import Folder from '@/components/ui/Folder.vue';
+import { computed } from 'vue';
+import ExplorerTable from '@/components/ExplorerTable.vue';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -22,6 +14,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+const page = usePage();
+const user =  page.props.auth.user;
+
+const getUser = computed(() => {
+    return user.role
+});
 </script>
 <template>
 
@@ -33,7 +31,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <!-- Box 1 -->
                 <div class="grid">
                     <p class="text-gray-400 text-xs">Projets</p>
-                    <div class="h-[100px] bg-orange-200 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div
+                        class="h-[100px] bg-orange-200 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <div class="flex justify-between items-center">
                             <p class="text-2xl">06 Projets</p>
                             <Link>
@@ -52,7 +51,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <!-- Box 2 -->
                 <div class="grid">
                     <p class="text-gray-400 text-xs">Tâches</p>
-                    <div class="h-[100px] bg-blue-50 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div
+                        class="h-[100px] bg-blue-50 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <div class="flex justify-between items-center">
                             <p class="text-2xl">120 tâches</p>
                             <Link>
@@ -68,40 +68,59 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
                 </div>
 
-                <!-- Box 3 -->
+                <!-- Box 3  #c3beff -->
                 <div class="grid">
                     <p class="text-slate-400 text-xs">Données & services</p>
-                    <div class="h-[100px] bg-blue-200 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <div
+                        class="h-[100px] bg-[#bedaff] p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <div class="flex justify-between items-center">
                             <div class="text-2xl grid place-content-center">
-                                <p>02</p>
-                                <Building class="mt-2" />
+                                <p class="font-bold">02</p>
+                                <Building class="mt-2 hover:stroke-[#162456]" />
                             </div>
                             <div class="text-2xl grid place-content-center">
-                                <p>10</p>
-                                <FolderClosedIcon class="mt-2" />
+                                <p class="font-bold">02</p>
+                                <UsersRound class="mt-2 hover:stroke-[#162456]" />
                             </div>
                             <div class="text-2xl grid place-content-center">
-                                <p>250</p>
-                                <FileArchiveIcon class="mt-2" />
+                                <p class="font-bold">10</p>
+                                <FolderClosedIcon class="mt-2 hover:stroke-[#162456]" />
+                            </div>
+                            <div class="text-2xl grid place-content-center">
+                                <p class="font-bold">250</p>
+                                <FileArchiveIcon class="mt-2 hover:stroke-[#162456]" />
                             </div>
 
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex-1 bg-white">
-                <p class="text-gray-400 text-xs">Stats générales</p>
-                <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <BarChart :colors="['black', '#0074B8']" :data="data" index="name"
-                        :categories="['total', 'predicted']" :y-formatter="(tick, i) => {
-                            return typeof tick === 'number'
-                                ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
-                                : ''
-                        }" :rounded-corners="4" />
+
+            <p class="text-gray-400 text-xs">Ressources partagées</p>
+            <div class="flex-1 bg-white p-1">
+                <div class="rounded-xl  border-sidebar-border/70 dark:border-sidebar-border">
+                    <ScrollArea class="h-50 rounded">
+                        <table v-if="getUser == 'admin'" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <!-- TODO Faire passer les avatars en dessous du thead -->
+                            <tbody>
+                                <div class="flex flex-wrap gap-2 p-2">
+                                    <Link v-for="folder in 10" :key="folder" class="grid justify-items-center">
+                                    <Folder />
+                                    <p class="w-[130px] text-ellipsis text-nowrap overflow-hidden text-xs">Service
+                                        Communication</p>
+                                    </Link>
+                                </div>
+                            </tbody>
+                        </table>
+
+                        <ExplorerTable v-if="getUser == 'member' || getUser == 'moderator'">
+
+                        </ExplorerTable>
+
+
+                    </ScrollArea>
                 </div>
             </div>
-
         </div>
     </AppLayout>
 </template>

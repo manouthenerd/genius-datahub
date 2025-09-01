@@ -6,5 +6,5 @@ use Illuminate\Http\Request;
 
 class FolderController extends Controller
 {
-    //
+    protected $fillable = ['name'];
 }
