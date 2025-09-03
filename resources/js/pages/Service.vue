@@ -45,11 +45,9 @@ function getUserRole(role: string): string {
 
         case "admin":
             return "admin";
-            break;
 
         case "moderator":
             return "modérateur"
-            break;
 
         default:
             return "membre"
@@ -248,7 +246,7 @@ const usersWithMemberRole = props.users?.filter(user => user.role == "member")
 
                                         <SelectInput name="service_moderator" placeholder="Choix du modérateur"
                                             required>
-                                            <SelectItem v-for="user in usersWithMemberRole" :value="user.id">
+                                            <SelectItem v-for="user in usersWithMemberRole" :value="user.id" :key="user.name">
                                                 {{ user.name }}
                                             </SelectItem>
                                         </SelectInput>

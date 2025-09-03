@@ -6,7 +6,7 @@ import { Head } from '@inertiajs/vue3';
 import { Award, Plus, Bookmark } from 'lucide-vue-next';
 import AvatarGroup from '@/components/AvatarGroup.vue';
 import ActionOption from '@/components/ActionOption.vue';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import TaskCard from '@/components/ui/card/TaskCard.vue';
 import { Badge } from '@/components/ui/badge';
 
