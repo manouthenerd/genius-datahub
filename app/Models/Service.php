@@ -23,6 +23,15 @@ class Service extends Model
         return $this->hasMany(User::class);
     }
 
+    /**
+     * Fetch folders associated to the Service
+     *
+     * @return HasMany
+     */
+    public function folders(): HasMany {
+        return $this->hasMany(Folder::class);
+    }
+
     public function scopeWithName($query) {
         return $query->select('id', 'name', 'created_at');
     }

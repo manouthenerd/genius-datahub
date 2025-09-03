@@ -6,7 +6,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ResourceController;
-
+use App\Models\Service;
 
 Route::middleware(["auth"])->group(function () {
 
@@ -28,7 +28,9 @@ Route::middleware(["auth"])->group(function () {
 });
 
 Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
+    $services = Service::all(['id', 'name', 'updated_at']);
+
+    return Inertia::render('Dashboard', ['services' => $services]);
 })->middleware(["auth", "verified"])->name('dashboard');
 
 
