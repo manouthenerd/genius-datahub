@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Inspiring;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -44,7 +45,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user() ?? $request->user('admin'),
+                'user' => $request->user(),
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),

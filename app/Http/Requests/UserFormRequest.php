@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class UserFormRequest extends FormRequest
@@ -13,7 +12,7 @@ class UserFormRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->is_admin || Auth::user()->type == 'moderator';
+        return request()->user()->role == 'admin';
     }
 
     /**
@@ -24,10 +23,10 @@ class UserFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'required', 'min:3'],
-            'email' => ['email', 'required', 'unique:users,email'],
-            'type' => ['required', Rule::in(['moderator', 'member'])],
-            'service' => ['required', 'exists:services,id'],
+            'name'      => ['string', 'required', 'min:3'],
+            'email'     => ['email', 'required', 'unique:users,email'],
+            'role'      => ['required', Rule::in(['moderator', 'member'])],
+            'service'   => ['required', 'exists:services,id'],
         ];
     }
 }

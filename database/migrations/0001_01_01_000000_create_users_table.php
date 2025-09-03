@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Service::class);
+            $table->foreignIdFor(Service::class)->nullable();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('type', ['moderator', 'member']);
+            $table->enum('role', ['admin', 'moderator', 'member']);
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->default('password');
             $table->rememberToken();
             $table->timestamps();
         });

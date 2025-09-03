@@ -1,107 +1,49 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
-import { Progress } from '@/components/ui/progress';
-import { BarChart } from "@/components/ui/chart-bar"
-import { ArrowUpRight, Building, FolderClosedIcon, FileArchiveIcon } from 'lucide-vue-next';
 
-const data = [
-    { name: "Jan", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Feb", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Mar", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Apr", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "May", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Jun", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-    { name: "Jul", total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-]
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-];
+import { computed } from 'vue';
+import { usePage, Link } from '@inertiajs/vue3';
+import Folder from '@/components/ui/Folder.vue';
+import ResourcesLayout from '@/layouts/dashboard/ResourcesLayout.vue';
 
+defineOptions({ layout: ResourcesLayout })
+
+interface Service {
+    id: number,
+    name: string,
+    updated_at: string
+}
+
+
+defineProps<{ services: Service[] }>();
+
+const page = usePage();
+const user = page.props.auth?.user;
+
+const getUser = computed(() => {
+    return user?.role
+});
 </script>
+
 <template>
 
-    <Head title="Dashboard" />
+    <table v-if="getUser == 'admin'" class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <!-- TODO Faire passer les avatars en dessous du thead -->
+        <tbody>
+            <tr class="flex flex-wrap gap-2 p-2">
+                <Link v-for="service in services" :key="service.id" :href="route('resources.folders', [service.id])"
+                    class="grid justify-items-center">
+                <Folder />
+                <p class="w-[130px] text-ellipsis text-center text-nowrap overflow-hidden text-xs">
+                    {{ service.name }}
+                </p>
+                </Link>
+            </tr>
+        </tbody>
+    </table>
 
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <!-- Box 1 -->
-                <div class="grid">
-                    <p class="text-gray-400 text-xs">Projets</p>
-                    <div class="h-[100px] bg-blue-50 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <div class="flex justify-between items-center">
-                            <p class="text-2xl">06 Projets</p>
-                            <Link>
-                            <ArrowUpRight color="#0074B8" />
-                            </Link>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <Progress class="w-1/2" :model-value="20" />
-                            <p class="font-bold text-xs">
-                                01/06
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    <!-- TODO Injecter les données dans le tableau -->
+    <!-- <ExplorerTable v-if="getUser == 'member' || getUser == 'moderator'">
 
-                <!-- Box 2 -->
-                <div class="grid">
-                    <p class="text-gray-400 text-xs">Tâches</p>
-                    <div class="h-[100px] bg-blue-100 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <div class="flex justify-between items-center">
-                            <p class="text-2xl">120 tâches</p>
-                            <Link>
-                            <ArrowUpRight color="#0074B8" />
-                            </Link>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <Progress class="w-1/2" :model-value="20" />
-                            <p class="font-bold text-xs">
-                                40/120
-                            </p>
-                        </div>
-                    </div>
-                </div>
+    </ExplorerTable> -->
 
-                <!-- Box 3 -->
-                <div class="grid">
-                    <p class="text-slate-400 text-xs">Données & services</p>
-                    <div class="h-[100px] bg-blue-200 p-2 rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <div class="flex justify-between items-center">
-                            <div class="text-2xl grid place-content-center">
-                                <p>02</p>
-                                <Building class="mt-2" />
-                            </div>
-                            <div class="text-2xl grid place-content-center">
-                                <p>10</p>
-                                <FolderClosedIcon class="mt-2" />
-                            </div>
-                            <div class="text-2xl grid place-content-center">
-                                <p>250</p>
-                                <FileArchiveIcon class="mt-2" />
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex-1 bg-zinc-100">
-                <p class="text-gray-400 text-xs">Stats générales</p>
-                <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <BarChart :colors="['black', '#0074B8']" :data="data" index="name"
-                        :categories="['total', 'predicted']" :y-formatter="(tick, i) => {
-                            return typeof tick === 'number'
-                                ? `$ ${new Intl.NumberFormat('us').format(tick).toString()}`
-                                : ''
-                        }" :rounded-corners="4" />
-                </div>
-            </div>
-
-        </div>
-    </AppLayout>
 </template>

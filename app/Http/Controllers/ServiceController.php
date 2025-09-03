@@ -2,35 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Inertia\Inertia;
+use App\Http\Requests\CreateServiceRequest;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
+use Inertia\Inertia;
 
 class ServiceController extends Controller
 {
-    public function index() {
-        return Inertia::render('Service', ['users' => $this->getUsersWithService()]);
+    public function index()
+    {
+
+        return Inertia::render('Service', [
+            'users' => User::withBasicInfo()->withServiceName()->get(),
+            'services' => Service::withModerator(),
+        ]);
     }
 
-    public function getUsers() {
-        return User::all(['id', 'name', 'email', 'type', 'service_id']);
+    public function store(CreateServiceRequest $request)
+    {
+        Service::create([
+            'name' => $request->validated('service_name')
+        ]);   
+        
+        return redirect()->back(201);
     }
 
-    public function fetchUserService(Collection $collection) {
-        $users = $collection->map(function($item) {
+    public function update(Request $request)
+    {
+        $validated = $request->validate([
+            
+        ]);
 
-            $item['service'] = Service::find($item->service_id)->only(["name"]);
-
-            return $item;
-        });
-
-        return $users;
+       
     }
 
-    public function getUsersWithService() {
-        return $this->fetchUserService($this->getUsers());
+    public function destroy(int $id)
+    {
+        $user = Service::findOrFail($id);
+
+        $user->delete();
+
+        return redirect()->back();
     }
 }

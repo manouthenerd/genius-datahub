@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Project;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,14 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Project::class);
+            $table->string('name');
+            $table->text('description');
+            $table->enum('status', ['en cours', 'à faire','terminée'])->default('à faire');
+            $table->string('tag');
+            $table->string('image_path')->nullable();
+            $table->date('from');
+            $table->date('to');
             $table->timestamps();
         });
     }
