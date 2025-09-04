@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="flex min-h-svh flex-col items-center justify-center gap-6 bg-gradient-to-r from-slate-100 to-orange-50 via-blue-100 p-6 md:p-10">
+    <div class="flex min-h-svh flex-col items-center justify-center gap-6 bg-gradient-to-r from-slate-100 via-blue-100 to-orange-50 p-6 md:p-10">
         <div class="w-full max-w-sm">
             <div class="flex flex-col gap-8">
                 <div class="flex flex-col items-center gap-4">

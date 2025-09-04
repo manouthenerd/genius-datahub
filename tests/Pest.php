@@ -12,9 +12,11 @@
 */
 
 pest()->extend(Tests\TestCase::class)
- // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
 
+    // Set Firefox as default browser for browser testing
+pest()->browser()->inFirefox();
 /*
 |--------------------------------------------------------------------------
 | Expectations

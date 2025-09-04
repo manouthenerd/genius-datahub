@@ -2,15 +2,17 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Archive;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateServiceRequest extends FormRequest
+class UpdateArchiveRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
+
         return true;
     }
 
@@ -21,17 +23,8 @@ class CreateServiceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return 
-            [
-                'service_name'      => ['required', 'string', 'min:3'],
-            ]
-        ;
-    }
-
-    public function attributes(): array 
-    {
         return [
-            "service_name"      => "nom du service",
+            'name' => "required|string|max:100"
         ];
     }
 }

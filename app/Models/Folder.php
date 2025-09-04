@@ -12,9 +12,8 @@ class Folder extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-    ];
+    protected $fillable = ['user_id', 'service_id', 'name'];
+
 
     /**
      * Return archives associated to the Folder

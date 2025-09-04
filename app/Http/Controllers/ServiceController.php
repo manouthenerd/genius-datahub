@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateServiceRequest;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
 
         return Inertia::render('Service', [
@@ -19,29 +22,45 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function store(CreateServiceRequest $request)
+    public function edit(Service $service): Response
     {
-        Service::create([
-            'name' => $request->validated('service_name')
-        ]);   
-        
-        return redirect()->back(201);
+        return Inertia::render('EditServiceForm', []);
     }
 
-    public function update(Request $request)
+    
+    public function store(CreateServiceRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            
+        Gate::authorize('create', Service::class);
+
+        Service::create([
+            'name' => $request->validated('service_name'),
+            'user_id' => $request->user()->id
+        ]); 
+                
+        return redirect()->back();
+    }
+
+    public function update(Request $request, Service $service): RedirectResponse
+    {
+        Gate::authorize('update', Service::class);
+
+       $request->validate([
+            'name' => 'required|string|max:50'
         ]);
+
+        $service->name = $request->input('name');
+
+        $service->save();
+
+        return redirect()->back();
 
        
     }
 
-    public function destroy(int $id)
+    public function destroy(Service $service): RedirectResponse
     {
-        $user = Service::findOrFail($id);
 
-        $user->delete();
+        $service->delete();
 
         return redirect()->back();
     }

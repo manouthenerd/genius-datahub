@@ -1,5 +1,5 @@
 <?php
 
-test('that true is true', function () {
-    expect(true)->toBeTrue();
+test('that result is greater than 2', function() {
+    
 });

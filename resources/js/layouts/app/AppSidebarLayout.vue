@@ -3,10 +3,10 @@ import AppContent from '@/components/AppContent.vue';
 import AppShell from '@/components/AppShell.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
 import AppSidebarHeader from '@/components/AppSidebarHeader.vue';
-import type { BreadcrumbItemType } from '@/types';
 import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import type { BreadcrumbItemType } from '@/types';
 import { Bell } from 'lucide-vue-next';
-import { Sheet, SheetContent, SheetHeader, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 interface Props {
     breadcrumbs?: BreadcrumbItemType[];
@@ -21,7 +21,7 @@ withDefaults(defineProps<Props>(), {
     <AppShell variant="sidebar">
         <AppSidebar />
         <AppContent variant="sidebar" class="overflow-x-hidden">
-            <div class="flex justify-between items-center">
+            <div class="flex items-center justify-between">
                 <AppSidebarHeader :breadcrumbs="breadcrumbs" />
                 <Sheet>
                     <SheetTrigger>
@@ -31,12 +31,8 @@ withDefaults(defineProps<Props>(), {
                     </SheetTrigger>
                     <SheetContent>
                         <SheetHeader>
-                            <SheetTitle>
-                                Notifications
-                            </SheetTitle>
-                            <SheetDescription>
-                                Toutes vos notifications seront listées ici.
-                            </SheetDescription>
+                            <SheetTitle> Notifications </SheetTitle>
+                            <SheetDescription> Toutes vos notifications seront listées ici. </SheetDescription>
                         </SheetHeader>
                         <div>
                             <p>Hello World</p>

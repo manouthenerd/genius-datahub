@@ -13,7 +13,6 @@ Route::middleware(["auth"])->group(function () {
     Route::get('/', function () {})->name('home');
     Route::redirect('/', '/dashboard');
 
-    Route::get('services',  [ServiceController::class, 'index']);
     Route::get('tasks',     [TaskController::class, 'index']);
     Route::get('resources', [ResourceController::class, 'index']);
 
@@ -22,9 +21,11 @@ Route::middleware(["auth"])->group(function () {
     Route::put('users', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    Route::post('services', [ServiceController::class, 'store'])->name('services.create');
+    Route::get('services',  [ServiceController::class, 'index']);
+    Route::get('services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+    Route::post('services', [ServiceController::class, 'store'])->name('services.store');
     Route::put('services', [ServiceController::class, 'update'])->name('services.update');
-    Route::delete('services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+    Route::delete('services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
 
 Route::get('dashboard', function () {

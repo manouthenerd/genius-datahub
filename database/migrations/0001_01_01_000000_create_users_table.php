@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Service::class)->nullable();
+            $table->foreignIdFor(Service::class);
             $table->string('name');
             $table->string('email')->unique();
             $table->enum('role', ['admin', 'moderator', 'member']);

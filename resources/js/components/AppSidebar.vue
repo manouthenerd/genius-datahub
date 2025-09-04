@@ -29,7 +29,6 @@ const mainNavItems: NavItem[] = [
         icon: HardDrive,
     },
 ];
-
 </script>
 
 <template>
@@ -39,9 +38,9 @@ const mainNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                        <div>
-                            <img class="w-[150px]" src="image/logo-genius.png" alt="Logo de l'entreprise">
-                        </div>
+                            <div>
+                                <img class="w-[150px]" src="image/logo-genius.png" alt="Logo de l'entreprise" />
+                            </div>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

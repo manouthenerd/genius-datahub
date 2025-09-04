@@ -9,14 +9,11 @@ interface Props {
     className?: HTMLAttributes['class'];
 }
 
-
 defineProps<Props>();
-
-
 </script>
 
 <template>
     <div>
-        <img class="max-w-[200px]" src="image/logo-genius.png" alt="Logo de l'entreprise">
+        <img class="max-w-[200px]" src="image/logo-genius.png" alt="Logo de l'entreprise" />
     </div>
 </template>

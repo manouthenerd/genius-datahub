@@ -30,7 +30,7 @@ defineProps<{
                 </div>
 
                 <div class="my-6 flex items-center justify-start">
-                    <Button class="w-full bg-[#0168a6] hover:opacity-80 hover:bg-[#0168a6]" :disabled="processing">
+                    <Button class="w-full bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80" :disabled="processing">
                         <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
                         Envoyer
                     </Button>

@@ -42,8 +42,8 @@ class Service extends Model
         
         $services = $services->map(function($item) {
 
-            $moderator = $item->users()->where('role', 'moderator')->first(['id', 'name', 'role']);
 
+            $moderator = $item->users()->where('role', 'moderator')->first(['id', 'name', 'role']);
             $item['moderator'] = $moderator->name ?? 'Non défini';
             $item['counts'] = $item->users()->count();
 

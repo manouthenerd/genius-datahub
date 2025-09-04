@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateServiceRequest extends FormRequest
+class UpdateFolderRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,17 +21,8 @@ class CreateServiceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return 
-            [
-                'service_name'      => ['required', 'string', 'min:3'],
-            ]
-        ;
-    }
-
-    public function attributes(): array 
-    {
         return [
-            "service_name"      => "nom du service",
+            'name' => "required|string|max:100"
         ];
     }
 }

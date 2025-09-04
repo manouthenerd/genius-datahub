@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import ActionOption from '@/components/ActionOption.vue';
+import AvatarGroup from '@/components/AvatarGroup.vue';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import TaskCard from '@/components/ui/card/TaskCard.vue';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import { Award, Plus, Bookmark } from 'lucide-vue-next';
-import AvatarGroup from '@/components/AvatarGroup.vue';
-import ActionOption from '@/components/ActionOption.vue';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import TaskCard from '@/components/ui/card/TaskCard.vue';
-import { Badge } from '@/components/ui/badge';
+import { Award, Bookmark, Plus } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,82 +16,58 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/tasks',
     },
 ];
-
 </script>
 
 <template>
-
     <Head title="Tâches" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <div class="grid auto-rows-min">
-
-                <div class="p-1 space-y-2 border border-slate-200 text-xs rounded shadow bg-amber-100 text-black/90">
-                    <p class="flex items-center uppercase font-bold">
+                <div class="space-y-2 rounded border border-slate-200 bg-amber-100 p-1 text-xs text-black/90 shadow">
+                    <p class="flex items-center font-bold uppercase">
                         <Award :size="18" />
                         Important
                     </p>
                     <p class="ml-1 text-[#000000e3]">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nemo, impedit debitis quaerat ipsa
-                        architecto repellendus aliquam quibusdam laudantium iste laborum odio ut. Alias expedita minus
-                        nulla veniam voluptate sed, magni dolorum consequatur magnam explicabo, delectus cupiditate
-                        dicta illo iure quaerat qui ratione debitis blanditiis asperiores optio quod quas nemo.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas nemo, impedit debitis quaerat ipsa architecto repellendus
+                        aliquam quibusdam laudantium iste laborum odio ut. Alias expedita minus nulla veniam voluptate sed, magni dolorum consequatur
+                        magnam explicabo, delectus cupiditate dicta illo iure quaerat qui ratione debitis blanditiis asperiores optio quod quas nemo.
                     </p>
                 </div>
-
             </div>
             <div class="flex-1">
-                <div class="flex justify-between items-center">
-                    <p class="text-gray-400 text-xs">Projets en cours</p>
+                <div class="flex items-center justify-between">
+                    <p class="text-xs text-gray-400">Projets en cours</p>
                     <Button variant="ghost">
                         <Plus />
                         Nouveau Projet
                     </Button>
                 </div>
                 <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-
-
-                    <div class="relative overflow-x-auto sm:rounded-lg bg-white">
+                    <div class="relative overflow-x-auto bg-white sm:rounded-lg">
                         <ScrollArea class="h-50">
-
-
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs bg-blue-950 sticky top-0 sticky-top   text-white uppercase dark:bg-gray-700 dark:text-gray-400">
+                            <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-2 py-3">
-                                            Titre
-                                        </th>
-                                        <th scope="col" class="px-2 py-3">
-                                            Tag
-                                        </th>
-                                        <th scope="col" class="px-2 py-3">
-                                            Cessionnaires
-                                        </th>
-                                        <th scope="col" class="px-2 py-3">
-                                            Statut
-                                        </th>
-                                        <th scope="col" class="px-2 py-3">
-                                            Priorité
-                                        </th>
-                                        <th scope="col" class="px-2 py-3">
-                                            Date
-                                        </th>
+                                        <th scope="col" class="px-2 py-3">Titre</th>
+                                        <th scope="col" class="px-2 py-3">Tag</th>
+                                        <th scope="col" class="px-2 py-3">Cessionnaires</th>
+                                        <th scope="col" class="px-2 py-3">Statut</th>
+                                        <th scope="col" class="px-2 py-3">Priorité</th>
+                                        <th scope="col" class="px-2 py-3">Date</th>
                                         <th scope="col" class="px-2 py-3">
                                             <span class="sr-only">Edit</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="border-y cursor-pointer hover:bg-slate-200 transition-all dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                                        <th scope="row"
-                                            class="px-2 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            Site SAPH
-                                        </th>
+                                    <tr
+                                        class="cursor-pointer border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800"
+                                    >
+                                        <th scope="row" class="px-2 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">Site SAPH</th>
                                         <td class="px-2 py-2">
-                                            <Badge>
-                                                Vidéosurveillance
-                                            </Badge>
+                                            <Badge> Vidéosurveillance </Badge>
                                         </td>
                                         <td class="px-2 py-2">
                                             <AvatarGroup />
@@ -101,65 +77,64 @@ const breadcrumbs: BreadcrumbItem[] = [
                                                 <span class="size-[5px] rounded-full bg-green-500"></span> En cours
                                             </Badge>
                                         </td>
-                                        <td class="px-2 py-2">
-                                            Moyenne
-                                        </td>
-                                        <td class="px-2 py-2">
-                                            10.04.2025
-                                        </td>
+                                        <td class="px-2 py-2">Moyenne</td>
+                                        <td class="px-2 py-2">10.04.2025</td>
                                         <td class="px-2 py-2 text-right">
                                             <ActionOption />
                                         </td>
                                     </tr>
-
                                 </tbody>
                             </table>
                         </ScrollArea>
                     </div>
-
                 </div>
             </div>
             <div class="flex-1">
-                <div class="flex justify-between items-center">
-                    <p class="text-gray-400 text-xs">Aperçu des tâches</p>
+                <div class="flex items-center justify-between">
+                    <p class="text-xs text-gray-400">Aperçu des tâches</p>
                     <Button variant="ghost">
                         <Plus />
                         Nouvelle tâche
                     </Button>
                 </div>
-                <div
-                    class="grid grid-cols-3 gap-2 overflow-x-scroll rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-
-                    <ScrollArea class="grid bg-zinc-100 rounded-sm gap-2 overflow-x-scroll max-h-[340px] p-2">
-                        <div class="flex justify-between items-center px-0.5 my-2">
-                            <p class="bg-gray-300 rounded p-1">
-                                A Faire
-                            </p>
+                <div class="grid grid-cols-3 gap-2 overflow-x-scroll rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-zinc-100 p-2">
+                        <div class="my-2 flex items-center justify-between px-0.5">
+                            <p class="rounded bg-gray-300 p-1">A Faire</p>
                             <Button variant="ghost">
                                 10
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
+                        <TaskCard
+                            priority="Normal"
+                            tag="Programming"
+                            title="Laravel Framework"
                             description="About The Best PHP Framework Ever."
                             image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
+                            :progression="40"
+                        />
+                        <TaskCard
+                            priority="Normal"
+                            tag="Programming"
+                            title="Laravel Framework"
                             description="About The Best PHP Framework Ever."
                             image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
+                            :progression="40"
+                        />
+                        <TaskCard
+                            priority="Normal"
+                            tag="Programming"
+                            title="Laravel Framework"
                             description="About The Best PHP Framework Ever."
                             image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
-
+                            :progression="40"
+                        />
                     </ScrollArea>
 
-                    <ScrollArea class="grid bg-blue-50 rounded-sm gap-2 overflow-x-scroll max-h-[340px] p-2">
-                        <div class="flex justify-between items-center px-0.5 my-2">
-                            <p class="bg-blue-300 rounded p-1">
-                                En cours
-                            </p>
+                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-blue-50 p-2">
+                        <div class="my-2 flex items-center justify-between px-0.5">
+                            <p class="rounded bg-blue-300 p-1">En cours</p>
                             <div class="flex">
                                 <Button variant="link">
                                     <Plus />
@@ -167,25 +142,35 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <ActionOption />
                             </div>
                         </div>
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
+                        <TaskCard
+                            priority="Hight"
+                            tag="Learning"
+                            title="Learning LLMs"
                             description="How building LLMs from Scratch"
                             image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
+                            :progression="50"
+                        />
+                        <TaskCard
+                            priority="Hight"
+                            tag="Learning"
+                            title="Learning LLMs"
                             description="How building LLMs from Scratch"
                             image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
+                            :progression="50"
+                        />
+                        <TaskCard
+                            priority="Hight"
+                            tag="Learning"
+                            title="Learning LLMs"
                             description="How building LLMs from Scratch"
                             image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
+                            :progression="50"
+                        />
                     </ScrollArea>
 
-                    <ScrollArea class="grid bg-green-50 rounded-sm gap-2 overflow-x-scroll max-h-[340px] p-2">
-                        <div class="flex justify-between items-center px-0.5 my-2">
-                            <p class="bg-green-300 rounded p-1">
-                                Terminées
-                            </p>
+                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-green-50 p-2">
+                        <div class="my-2 flex items-center justify-between px-0.5">
+                            <p class="rounded bg-green-300 p-1">Terminées</p>
                             <div class="flex">
                                 <Button variant="link">
                                     <Plus />
@@ -193,15 +178,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <ActionOption />
                             </div>
                         </div>
-                        <TaskCard priority="Low" tag="Mission" title="Vidéosurveillance"
+                        <TaskCard
+                            priority="Low"
+                            tag="Mission"
+                            title="Vidéosurveillance"
                             description="Comment installer une caméra"
-                            image="https://ticou.net/site/assets/images/videosurveillance.jpg" :progression="50" />
+                            image="https://ticou.net/site/assets/images/videosurveillance.jpg"
+                            :progression="50"
+                        />
                     </ScrollArea>
-
-
                 </div>
             </div>
-
         </div>
     </AppLayout>
 </template>
