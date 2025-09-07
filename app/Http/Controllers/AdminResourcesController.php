@@ -2,19 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Folder;
 use App\Models\Service;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
+use App\Policies\ServicePolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+
 
 class AdminResourcesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    
+     #[UsePolicy(ServicePolicy::class)]
     public function folders(int $service)
     {
-
+        Gate::authorize('view', $service);
+        
         // Récupérer le service
         $service = Service::where('id', $service)->firstOr(function() {
             return [];

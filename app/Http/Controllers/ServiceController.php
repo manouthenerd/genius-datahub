@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateServiceRequest;
 use App\Models\Service;
 use App\Models\User;
+use App\Policies\ServicePolicy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -42,7 +43,7 @@ class ServiceController extends Controller
 
     public function update(Request $request, Service $service): RedirectResponse
     {
-        Gate::authorize('update', Service::class);
+        Gate::authorize('action', Service::class);
 
        $request->validate([
             'name' => 'required|string|max:50'
@@ -59,6 +60,7 @@ class ServiceController extends Controller
 
     public function destroy(Service $service): RedirectResponse
     {
+        Gate::authorize('action', Service::class);
 
         $service->delete();
 

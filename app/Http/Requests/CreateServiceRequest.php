@@ -21,17 +21,14 @@ class CreateServiceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return 
-            [
-                'service_name'      => ['required', 'string', 'min:3'],
-            ]
-        ;
+        return
+            ['service_name' => ['required', 'string', 'min:3'],];
     }
 
-    public function attributes(): array 
+    public function attributes(): array
     {
         return [
-            "service_name"      => "nom du service",
+            "service_name" => "nom du service",
         ];
     }
 }

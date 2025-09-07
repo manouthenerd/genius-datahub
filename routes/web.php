@@ -24,7 +24,7 @@ Route::middleware(["auth"])->group(function () {
     Route::get('services',  [ServiceController::class, 'index']);
     Route::get('services/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
     Route::post('services', [ServiceController::class, 'store'])->name('services.store');
-    Route::put('services', [ServiceController::class, 'update'])->name('services.update');
+    Route::put('services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
 });
 

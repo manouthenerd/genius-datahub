@@ -18,4 +18,8 @@ class ServicePolicy
     public function action(User $user) {
         return $user->role == 'admin';
     }
+
+    public function view(User $user, Service $service) {
+        return $user->service_id == $service->id || $user->role == 'admin';
+    }
 }
