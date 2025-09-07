@@ -28,6 +28,7 @@
                 >
                     Supprimer
                 </Link>
+                <slot/>
             </div>
         </PopoverContent>
     </Popover>

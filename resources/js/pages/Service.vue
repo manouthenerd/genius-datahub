@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import { dateFormat } from '@/composables/useDateFormat';
 import { Loader } from 'lucide-vue-next';
+import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,10 +25,32 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const props = defineProps({
-    users: Array,
-    services: Array,
-});
+interface Services {
+    id: number,
+    name: string,
+    created_at: string,
+    moderator: string,
+    counts: number
+}
+
+interface User {
+    id: number,
+    name: string,
+    email: string,
+    role: string,
+    service_id: number,
+    service: {
+        id: number,
+        name: string
+    }
+}
+
+// const props = defineProps({
+//     users: Array,
+//     services: Array,
+// });
+
+defineProps<{ users: User[], services: Services[] }>();
 
 function getUserRole(role: string): string {
     switch (role) {
@@ -44,6 +67,7 @@ function getUserRole(role: string): string {
 </script>
 
 <template>
+
     <Head title="Services et membres" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -62,15 +86,18 @@ function getUserRole(role: string): string {
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle> Nouveau membre </DialogTitle>
-                                <DialogDescription> Ajouter un nouveau membre à ceux déjà existant dans un service </DialogDescription>
+                                <DialogDescription> Ajouter un nouveau membre à ceux déjà existant dans un service
+                                </DialogDescription>
                             </DialogHeader>
                             <div class="rounded bg-zinc-100 p-2">
                                 <!-- TODO: Alert component here -->
                                 <Transition>
-                                    <p v-if="false" class="rounded-sm bg-blue-100 p-2">Enregistrement effectué avec succès !</p>
+                                    <p v-if="false" class="rounded-sm bg-blue-100 p-2">Enregistrement effectué avec
+                                        succès !</p>
                                 </Transition>
                             </div>
-                            <Form :action="route('users.create')" method="POST" v-slot="{ errors, processing }" :reset-on-success="['name', 'email']">
+                            <Form :action="route('users.create')" method="POST" v-slot="{ errors, processing }"
+                                :reset-on-success="['name', 'email']">
                                 <div class="grid gap-4 py-2">
                                     <div class="grid gap-1">
                                         <Label for="name"> Nom & prénoms </Label>
@@ -86,7 +113,8 @@ function getUserRole(role: string): string {
                                         <Label for="type"> Service à intégrer </Label>
 
                                         <SelectInput name="service" placeholder="Choix du service">
-                                            <SelectItem v-for="service in props.services" :value="service.id" :key="service.id">
+                                            <SelectItem v-for="service in services" :value="service.id"
+                                                :key="service.id">
                                                 {{ service.name }}
                                             </SelectItem>
                                         </SelectInput>
@@ -104,7 +132,8 @@ function getUserRole(role: string): string {
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button :disabled="processing" type="submit" class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
+                                    <Button :disabled="processing" type="submit"
+                                        class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
                                         <Loader v-if="processing" class="h-4 w-4 animate-spin" />
                                         Sauvegarder
                                     </Button>
@@ -117,7 +146,8 @@ function getUserRole(role: string): string {
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                                <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
+                                <thead
+                                    class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">Nom</th>
                                         <th scope="col" class="px-6 py-3">Email</th>
@@ -129,12 +159,10 @@ function getUserRole(role: string): string {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr
-                                        v-for="user in props.users"
-                                        :key="user.email"
-                                        class="border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800"
-                                    >
-                                        <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <tr v-for="user in users" :key="user.email"
+                                        class="border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800">
+                                        <th scope="row"
+                                            class="px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                             {{ user.name }}
                                         </th>
 
@@ -148,7 +176,8 @@ function getUserRole(role: string): string {
                                             {{ getUserRole(user.role) }}
                                         </td>
                                         <td class="px-6 py-2 text-right">
-                                            <ActionOption :edit-link="route('users.edit', user.id)" :delete-link="route('users.destroy', user.id)" />
+                                            <ActionOption :edit-link="route('users.edit', user.id)"
+                                                :delete-link="route('users.destroy', user.id)" />
                                         </td>
                                     </tr>
                                 </tbody>
@@ -174,12 +203,8 @@ function getUserRole(role: string): string {
                                 <DialogTitle> Nouveau service </DialogTitle>
                                 <DialogDescription> Ajouter un nouveau service aux existants </DialogDescription>
                             </DialogHeader>
-                            <Form
-                                :action="route('services.store')"
-                                method="POST"
-                                :reset-on-success="['service_name']"
-                                v-slot="{ errors, processing }"
-                            >
+                            <Form :action="route('services.store')" method="POST" :reset-on-success="['service_name']"
+                                v-slot="{ errors, processing }">
                                 <div class="grid gap-4 py-2">
                                     <div class="grid space-y-2">
                                         <Label for="service_name"> Nom du service </Label>
@@ -188,7 +213,8 @@ function getUserRole(role: string): string {
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button :disabled="processing" type="submit" class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
+                                    <Button :disabled="processing" type="submit"
+                                        class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
                                         <Loader v-if="processing" class="h-4 w-4 animate-spin" />
                                         Sauvegarder
                                     </Button>
@@ -202,7 +228,8 @@ function getUserRole(role: string): string {
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                                 <!-- TODO Faire passer les avatars en dessous du thead -->
-                                <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
+                                <thead
+                                    class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" class="px-6 py-3">Service</th>
                                         <th scope="col" class="px-6 py-3">Membres</th>
@@ -214,16 +241,15 @@ function getUserRole(role: string): string {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr
-                                        v-for="service in props.services"
-                                        :key="service.id"
-                                        class="border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800"
-                                    >
-                                        <th scope="row" class="px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                                    <tr v-for="service in services" :key="service.id"
+                                        class="border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800">
+                                        <th scope="row"
+                                            class="px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                             {{ service.name }}
                                         </th>
                                         <td class="px-6 py-2">
-                                            <Badge variant="secondary" class="bg-orange-400">{{ service.counts }}</Badge>
+                                            <Badge variant="secondary" class="bg-orange-400">{{ service.counts }}
+                                            </Badge>
                                         </td>
                                         <td class="px-6 py-2">
                                             {{ service.moderator }}
@@ -232,10 +258,85 @@ function getUserRole(role: string): string {
                                             {{ dateFormat(service.created_at) }}
                                         </td>
                                         <td class="px-6 py-2 text-right">
-                                            <ActionOption
-                                                :edit-link="route('services.edit', { service: service.id })"
-                                                :delete-link="route('services.destroy', { service: service.id })"
-                                            />
+                                            <ActionOption :show-edit-link="false"
+                                                :delete-link="route('services.destroy', { service: service.id })">
+                                                <Dialog>
+                                                    <DialogTrigger>
+                                                        <Button variant="ghost">
+                                                            Modifier
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Modification: {{ service.name }} </DialogTitle>
+                                                            <DialogDescription>Modifier les informations du service
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <div class="rounded bg-zinc-100 p-2">
+                                                            <!-- TODO: Alert component here -->
+                                                            <Transition>
+                                                                <p v-if="false" class="rounded-sm bg-blue-100 p-2">
+                                                                    Enregistrement effectué avec succès !</p>
+                                                            </Transition>
+                                                        </div>
+                                                        <Form :action="route('services.update', { service: 1 })"
+                                                            method="PUT" v-slot="{ errors, processing }"
+                                                            :reset-on-success="['name', 'email']">
+                                                            <div class="grid gap-4 py-2">
+                                                                <div class="grid gap-1">
+                                                                    <Label for="name"> Nom du service </Label>
+                                                                    <Input id="name" :modelValue="service.name"
+                                                                        name="name" class="bg-white" />
+                                                                    <InputError :message="errors.name" />
+                                                                </div>
+
+                                                                <div class="grid gap-1">
+                                                                    <Label for="moderator">Modérateur du service
+                                                                    </Label>
+
+                                                                    <SelectInput :defaultValue="service.moderator"
+                                                                        name="moderator"
+                                                                        placeholder="Choisir un nouveau modérateur">
+                                                                        <SelectItem selected
+                                                                            :modelValue="service.moderator"
+                                                                            :value="service.moderator"> {{
+                                                                                service.moderator }}
+                                                                        </SelectItem>
+                                                                        <SelectItem value="member"> Membre </SelectItem>
+                                                                    </SelectInput>
+                                                                    <InputError :message="errors.moderator" />
+                                                                </div>
+
+                                                                <div class="grid gap-1">
+                                                                    <Label for="members">Membres du service</Label>
+
+                                                                    <ScrollArea>
+                                                                        <ul class="h-[100px] space-y-2 p-2">
+                                                                            <li v-for="value in 10" :key="value"
+                                                                                class="border-b-1">
+                                                                                <Checkbox :id="`user-${value}`" />
+                                                                                <label :for="`user-${value}`" 
+                                                                                    class="text-sm font-medium mb-0.5">
+                                                                                    Checkbox {{ value }}
+                                                                                </label>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </ScrollArea>
+                                                                    <InputError :message="errors.members" />
+                                                                </div>
+                                                            </div>
+                                                            <DialogFooter class="mt-2">
+                                                                <Button :disabled="processing" type="submit"
+                                                                    class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
+                                                                    <Loader v-if="processing"
+                                                                        class="h-4 w-4 animate-spin" />
+                                                                    Enregistrer les modifications
+                                                                </Button>
+                                                            </DialogFooter>
+                                                        </Form>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </ActionOption>
                                         </td>
                                     </tr>
                                 </tbody>
