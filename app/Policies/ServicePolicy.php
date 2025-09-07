@@ -20,6 +20,6 @@ class ServicePolicy
     }
 
     public function view(User $user, Service $service) {
-        return $user->service_id == $service->id || $user->role == 'admin';
+        return ($user->service_id == $service->id) || $user->role == 'admin';
     }
 }

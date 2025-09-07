@@ -18,14 +18,9 @@ class AdminResourcesController extends Controller
      */
     
      #[UsePolicy(ServicePolicy::class)]
-    public function folders(int $service)
+    public function folders(Service $service)
     {
         Gate::authorize('view', $service);
-        
-        // Récupérer le service
-        $service = Service::where('id', $service)->firstOr(function() {
-            return [];
-        });
 
         $folders = $service->folders()->get(['id', 'name', 'updated_at']);
 
