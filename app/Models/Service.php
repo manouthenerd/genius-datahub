@@ -44,7 +44,7 @@ class Service extends Model
 
 
             $moderator = $item->users()->where('role', 'moderator')->first(['id', 'name', 'role']);
-            $item['moderator'] = $moderator->name ?? 'Non défini';
+            $item['moderator'] = $moderator ?? 'Non défini';
             $item['counts'] = $item->users()->count();
 
             return $item;

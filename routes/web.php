@@ -7,6 +7,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ResourceController;
 use App\Models\Service;
+use Illuminate\Http\Request;
+
+Route::put('/test', function(Request $request) {
+    return dd($request->all());
+});
 
 Route::middleware(["auth"])->group(function () {
 
@@ -17,6 +22,7 @@ Route::middleware(["auth"])->group(function () {
     Route::get('resources', [ResourceController::class, 'index']);
 
     Route::post('users', [UserController::class, 'store'])->name('users.create');
+    Route::post('users/add', [UserController::class, 'addUser'])->name('users.add');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.edit');
     Route::put('users', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');

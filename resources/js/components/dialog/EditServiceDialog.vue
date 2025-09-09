@@ -1,0 +1,132 @@
+<template>
+    <Dialog>
+        <DialogTrigger>
+            <Button variant="ghost">
+                Modifier
+            </Button>
+        </DialogTrigger>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>{{ service.name.toUpperCase() }} </DialogTitle>
+                <DialogDescription>Modifier les informations du service
+                </DialogDescription>
+            </DialogHeader>
+            <div class="rounded bg-zinc-100 p-2">
+                <!-- TODO: Alert component here -->
+                <Transition>
+                    <p v-if="false" class="rounded-sm bg-blue-100 p-2">
+                        Enregistrement effectué avec succès !</p>
+                </Transition>
+            </div>
+            <Form action="/test" method="PUT" v-slot="{ errors, processing }" :reset-on-success="['name', 'email']">
+                <div class="grid gap-4 py-2">
+                    <div class="grid gap-1">
+                        <Label for="name"> Nom du service </Label>
+                        <Input id="name" :modelValue="service.name" name="name" class="bg-white" />
+                        <InputError :message="errors.name" />
+                    </div>
+
+                    <div class="grid gap-1">
+                        <Label for="moderator">Modérateur du service
+                        </Label>
+
+                        <SelectInput :defaultValue="service.moderator.id" name="moderator"
+                            placeholder="Choisir un nouveau modérateur">
+                            <SelectItem v-for="member in service.members" :modelValue="member.id" :value="member.id"
+                                :key="member.id"> {{
+                                    member.name }}
+                            </SelectItem>
+                        </SelectInput>
+                        <InputError :message="errors.moderator" />
+                    </div>
+
+                    <div class="grid gap-1">
+                        <div class="flex items-center justify-between ml-1">
+                            <Label for="members">Membres du service ({{
+                                service.members.length }})</Label>
+
+                            <p>
+                                <AddMemberDialog :service />
+                            </p>
+                        </div>
+
+                        <ScrollArea v-if="service.members.length">
+                            <ul class="h-[100px] space-y-4 p-2">
+                                <li v-for="member in service.members" :key="member.id" class="mb-2 mt-2">
+                                    <input type="hidden" name="members" v-model="serviceUsers">
+                                    <label class="flex items-center justify-between">
+                                        <label :for="`member-${member.id}`"
+                                            class="font-medium ml-0.5 flex gap-0.5 items-center">
+                                            {{ member.name }}
+
+                                            <ShieldCheck class="stroke-blue-500" :size="13"
+                                                v-if="isServiceModerator(member.id, service.moderator.id)" />
+                                        </label>
+                                        <Trash
+                                            class="cursor-pointer hover:stroke-red-500 stroke-red-400 transition-colors"
+                                            color="red" :size="20" />
+
+                                    </label>
+                                    <Separator class="mt-2 mb-2" />
+                                </li>
+                            </ul>
+
+                        </ScrollArea>
+
+                        <p v-else class="p-2 rounded bg-zinc-100 text-center">
+                            Aucun membre trouvé.
+                        </p>
+                        <InputError :message="errors.members" />
+                    </div>
+                </div>
+                <DialogFooter class="mt-2">
+                    <Button :disabled="processing" type="submit"
+                        class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
+                        <Loader v-if="processing" class="h-4 w-4 animate-spin" />
+                        Enregistrer les modifications
+                    </Button>
+                </DialogFooter>
+            </Form>
+        </DialogContent>
+    </Dialog>
+</template>
+
+<script setup lang="ts">
+import { Form } from '@inertiajs/vue3';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import Input from '@/components/ui/input/Input.vue';
+import InputError from '@/components/InputError.vue';
+import SelectInput from '@/components/SelectInput.vue';
+import Label from '@/components/ui/label/Label.vue';
+import SelectItem from '@/components/ui/select/SelectItem.vue';
+import { Button } from '@/components/ui/button';
+import Separator from '@/components/ui/separator/Separator.vue';
+import { ShieldCheck, Trash } from 'lucide-vue-next';
+import AddMemberDialog from './AddMemberDialog.vue';
+
+const props = defineProps<{ service: Service, services: Service[] }>();
+
+interface Service {
+    id: number,
+    name: string,
+    created_at: string,
+    moderator: {
+        id: number,
+        name: string,
+        role: string
+    },
+    counts: number,
+    members: {
+        id: number,
+        name: string
+    }[]
+}
+
+function isServiceModerator(expected: number, current: number): boolean {
+    return expected === current;
+}
+
+const serviceUsers = props.services.map((service) => {
+    return service.id;
+})
+</script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddUserRequest;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Service;
@@ -16,6 +17,34 @@ class UserController extends Controller
 
 
     public function store(UserFormRequest $request)
+    {
+
+        // Récupérer le service associé à la requête
+        $service = Service::find((int) $request->service)->first(['id', 'name']);
+
+        // Récupérer le modérateur du service s'il existe
+        $moderator_exists = DB::table('users')
+            ->where('service_id', '=', $service->id)
+            ->where('role', '=', 'moderator')
+            ->first(['id', 'name', 'email']);
+
+        // Vérifier si le role de la requête match avec l'existence du modérateur
+        if ($moderator_exists && $request->role == "moderator") {
+            return redirect()->back()->withErrors([
+                'role' => "Le {$service->name} contient déjà un modérateur"
+            ]);
+        }
+
+        User::create([
+            'service_id' => (int) $request->service,
+            'name'       => $request->name,
+            'email'      => $request->email,
+            'role'       => $request->role,
+            'password'   => Hash::make("password")
+        ]);
+    }
+    
+    public function addUser(AddUserRequest $request)
     {
 
         // Récupérer le service associé à la requête

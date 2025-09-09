@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateServiceRequest;
 use App\Models\Service;
 use App\Models\User;
-use App\Policies\ServicePolicy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -17,9 +16,16 @@ class ServiceController extends Controller
     public function index(): Response
     {
 
+        $services = Service::withModerator()->map(function ($service) {
+
+            $service['members'] = $service->users()->get(['id', 'name', 'email']);
+
+            return  $service;
+        });
+
         return Inertia::render('Service', [
             'users' => User::withBasicInfo()->withServiceName()->get(),
-            'services' => Service::withModerator(),
+            'services' => $services,
         ]);
     }
 
@@ -28,7 +34,7 @@ class ServiceController extends Controller
         return Inertia::render('EditServiceForm', []);
     }
 
-    
+
     public function store(CreateServiceRequest $request): RedirectResponse
     {
         Gate::authorize('create', Service::class);
@@ -36,8 +42,8 @@ class ServiceController extends Controller
         Service::create([
             'name' => $request->validated('service_name'),
             'user_id' => $request->user()->id
-        ]); 
-                
+        ]);
+
         return redirect()->back();
     }
 
@@ -45,7 +51,7 @@ class ServiceController extends Controller
     {
         Gate::authorize('action', Service::class);
 
-       $request->validate([
+        $request->validate([
             'name' => 'required|string|max:50'
         ]);
 
@@ -54,8 +60,6 @@ class ServiceController extends Controller
         $service->save();
 
         return redirect()->back();
-
-       
     }
 
     public function destroy(Service $service): RedirectResponse
