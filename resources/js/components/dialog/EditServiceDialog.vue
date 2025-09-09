@@ -63,6 +63,7 @@
                                                 v-if="isServiceModerator(member.id, service.moderator.id)" />
                                         </label>
                                         <Trash
+                                            @click="deleteItem(member.id)"
                                             class="cursor-pointer hover:stroke-red-500 stroke-red-400 transition-colors"
                                             color="red" :size="20" />
 
@@ -92,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { Form } from '@inertiajs/vue3';
+import { Form, useForm } from '@inertiajs/vue3';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Input from '@/components/ui/input/Input.vue';
 import InputError from '@/components/InputError.vue';
@@ -103,6 +104,7 @@ import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ShieldCheck, Trash } from 'lucide-vue-next';
 import AddMemberDialog from './AddMemberDialog.vue';
+
 
 const props = defineProps<{ service: Service, services: Service[] }>();
 
@@ -129,4 +131,8 @@ function isServiceModerator(expected: number, current: number): boolean {
 const serviceUsers = props.services.map((service) => {
     return service.id;
 })
+
+const form = useForm({});
+
+const deleteItem = (id: number): void => form.delete(`/users/${id}`);
 </script>
