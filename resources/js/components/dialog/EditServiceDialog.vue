@@ -18,7 +18,7 @@
                         Enregistrement effectué avec succès !</p>
                 </Transition>
             </div>
-            <Form action="/test" method="PUT" v-slot="{ errors, processing }" :reset-on-success="['name', 'email']">
+            <Form :action="route('services.update', {service: service.id})" method="PUT" v-slot="{ errors, processing }" :reset-on-success="['name', 'email']">
                 <div class="grid gap-4 py-2">
                     <div class="grid gap-1">
                         <Label for="name"> Nom du service </Label>

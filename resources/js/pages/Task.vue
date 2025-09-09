@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ActionOption from '@/components/ActionOption.vue';
-import AvatarGroup from '@/components/AvatarGroup.vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import TaskCard from '@/components/ui/card/TaskCard.vue';
@@ -9,6 +8,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Award, Bookmark, Plus } from 'lucide-vue-next';
+import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
+import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,6 +17,17 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/tasks',
     },
 ];
+
+
+interface Project {
+    id: number,
+    title: string,
+    tag: string,
+    priority: string,
+    description: string,
+}
+
+defineProps<{projects: Project[]}>();
 </script>
 
 <template>
@@ -39,10 +51,9 @@ const breadcrumbs: BreadcrumbItem[] = [
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Projets en cours</p>
-                    <Button variant="ghost">
-                        <Plus />
-                        Nouveau Projet
-                    </Button>
+                    <p>
+                        <CreateProjectDialog/>
+                    </p>
                 </div>
                 <div class="rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                     <div class="relative overflow-x-auto bg-white sm:rounded-lg">
@@ -50,19 +61,19 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                                 <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-2 py-3">Titre</th>
+                                        <th scope="col" class="px-2 py-3">Libellé</th>
                                         <th scope="col" class="px-2 py-3">Tag</th>
-                                        <th scope="col" class="px-2 py-3">Cessionnaires</th>
                                         <th scope="col" class="px-2 py-3">Statut</th>
                                         <th scope="col" class="px-2 py-3">Priorité</th>
+                                        <th scope="col" class="px-2 py-3">Tâches</th>
                                         <th scope="col" class="px-2 py-3">Date</th>
-                                        <th scope="col" class="px-2 py-3">
-                                            <span class="sr-only">Edit</span>
-                                        </th>
+                                        <th scope="col" class="px-2 py-3"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr
+                                        v-for="project in projects"
+                                        :key="project.id"
                                         class="cursor-pointer border-y border-gray-200 transition-all hover:bg-slate-200 dark:border-gray-700 dark:bg-gray-800"
                                     >
                                         <th scope="row" class="px-2 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">Site SAPH</th>
@@ -70,17 +81,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                                             <Badge> Vidéosurveillance </Badge>
                                         </td>
                                         <td class="px-2 py-2">
-                                            <AvatarGroup />
-                                        </td>
-                                        <td class="px-2 py-2">
                                             <Badge class="bg-green-50 text-black" variant="secondary">
                                                 <span class="size-[5px] rounded-full bg-green-500"></span> En cours
                                             </Badge>
                                         </td>
                                         <td class="px-2 py-2">Moyenne</td>
+                                        <td class="px-2 py-2">2</td>
                                         <td class="px-2 py-2">10.04.2025</td>
                                         <td class="px-2 py-2 text-right">
-                                            <ActionOption />
+                                            <ActionOption :show-edit-link="false">
+                                                <!-- <EditProjectDialog :project/> -->
+                                            </ActionOption>
                                         </td>
                                     </tr>
                                 </tbody>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
@@ -32,6 +33,9 @@ Route::middleware(["auth"])->group(function () {
     Route::post('services', [ServiceController::class, 'store'])->name('services.store');
     Route::put('services/{service}', [ServiceController::class, 'update'])->name('services.update');
     Route::delete('services/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+
+    Route::post('/projects', [ProjectController::class, 'store'])->name('projects.create');
+    Route::post('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
 });
 
 Route::get('dashboard', function () {
