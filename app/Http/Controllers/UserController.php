@@ -18,9 +18,8 @@ class UserController extends Controller
 
     public function store(UserFormRequest $request)
     {
-
         // Récupérer le service associé à la requête
-        $service = Service::find((int) $request->service)->first(['id', 'name']);
+        $service = Service::find((int) $request->service, ['id', 'name']);
 
         // Récupérer le modérateur du service s'il existe
         $moderator_exists = DB::table('users')
@@ -49,6 +48,8 @@ class UserController extends Controller
 
         // Récupérer le service associé à la requête
         $service = Service::find((int) $request->service)->first(['id', 'name']);
+
+        dd($service);
 
         // Récupérer le modérateur du service s'il existe
         $moderator_exists = DB::table('users')

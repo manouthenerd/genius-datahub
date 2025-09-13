@@ -35,7 +35,7 @@
                     <div class="grid gap-1">
                         <Label for="type"> Service à intégrer </Label>
 
-                        <SelectInput name="service" placeholder="Choix du service">
+                        <SelectInput v-model="selectedService" name="service" placeholder="Choix du service">
                             <SelectItem v-for="service in services" :value="service.id" :key="service.id">
                                 {{ service.name }}
                             </SelectItem>
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Form } from '@inertiajs/vue3';
 import { Plus } from 'lucide-vue-next';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -94,4 +95,6 @@ interface Services {
 }
 
 defineProps<{services: Services[] }>();
+
+const selectedService = ref<number | null>(null);
 </script>
