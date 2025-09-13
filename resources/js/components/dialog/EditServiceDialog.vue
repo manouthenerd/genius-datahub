@@ -5,73 +5,69 @@
                 Modifier
             </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent class="max-h-[80vh] overflow-y-auto">
             <DialogHeader>
                 <DialogTitle>{{ service.name.toUpperCase() }} </DialogTitle>
-                <DialogDescription>Modifier les informations du service
-                </DialogDescription>
+                <DialogDescription>Modifier les informations du service</DialogDescription>
             </DialogHeader>
             <div class="rounded bg-zinc-100 p-2">
-                <!-- TODO: Alert component here -->
                 <Transition>
                     <p v-if="false" class="rounded-sm bg-blue-100 p-2">
-                        Enregistrement effectué avec succès !</p>
+                        Enregistrement effectué avec succès !
+                    </p>
                 </Transition>
             </div>
-            <Form :action="route('services.update', {service: service.id})" method="PUT" v-slot="{ errors, processing }" :reset-on-success="['name', 'email']">
+            <Form :action="route('services.update', { service: service.id })" method="PUT" v-slot="{ errors, processing }"
+                :reset-on-success="['name', 'email']">
                 <div class="grid gap-4 py-2">
+                    <!-- Service Name Field -->
                     <div class="grid gap-1">
                         <Label for="name"> Nom du service </Label>
                         <Input id="name" :modelValue="service.name" name="name" class="bg-white" />
                         <InputError :message="errors.name" />
                     </div>
 
+                    <!-- Moderator Field -->
                     <div class="grid gap-1">
-                        <Label for="moderator">Modérateur du service
-                        </Label>
-
+                        <Label for="moderator">Modérateur du service</Label>
                         <SelectInput :defaultValue="service.moderator.id" name="moderator"
                             placeholder="Choisir un nouveau modérateur">
                             <SelectItem v-for="member in service.members" :modelValue="member.id" :value="member.id"
-                                :key="member.id"> {{
-                                    member.name }}
+                                :key="member.id">
+                                {{ member.name }}
                             </SelectItem>
                         </SelectInput>
                         <InputError :message="errors.moderator" />
                     </div>
 
+                    <!-- Members List Section -->
                     <div class="grid gap-1">
                         <div class="flex items-center justify-between ml-1">
-                            <Label for="members">Membres du service ({{
-                                service.members.length }})</Label>
-
+                            <Label for="members">Membres du service ({{ service.members.length }})</Label>
                             <p>
-                                <AddMemberDialog :service />
+                                <AddMemberDialog :service="service" />
                             </p>
                         </div>
 
-                        <ScrollArea v-if="service.members.length">
-                            <ul class="h-[100px] space-y-4 p-2">
+                        <!-- Scrollable Members List -->
+                        <ScrollArea class="h-[120px] overflow-y-auto" v-if="service.members.length">
+                            <ul class="space-y-4 p-2">
                                 <li v-for="member in service.members" :key="member.id" class="mb-2 mt-2">
                                     <input type="hidden" name="members" v-model="serviceUsers">
                                     <label class="flex items-center justify-between">
                                         <label :for="`member-${member.id}`"
                                             class="font-medium ml-0.5 flex gap-0.5 items-center">
                                             {{ member.name }}
-
                                             <ShieldCheck class="stroke-blue-500" :size="13"
                                                 v-if="isServiceModerator(member.id, service.moderator.id)" />
                                         </label>
-                                        <Trash
-                                            @click="deleteItem(member.id)"
+                                        <Trash @click.prevent="deleteItem(member.id)"
                                             class="cursor-pointer hover:stroke-red-500 stroke-red-400 transition-colors"
                                             color="red" :size="20" />
-
                                     </label>
                                     <Separator class="mt-2 mb-2" />
                                 </li>
                             </ul>
-
                         </ScrollArea>
 
                         <p v-else class="p-2 rounded bg-zinc-100 text-center">
