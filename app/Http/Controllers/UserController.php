@@ -42,7 +42,7 @@ class UserController extends Controller
             'password'   => Hash::make("password")
         ]);
     }
-    
+
     public function addUser(AddUserRequest $request)
     {
 
@@ -84,6 +84,7 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
+        // Validation des données
         $validated = $request->validate([
             'name'      => ['string', 'required', 'min:3'],
             'email'     => ['string', 'email', 'required'],
@@ -91,16 +92,52 @@ class UserController extends Controller
             'service'   => ['required', 'exists:services,id'],
         ]);
 
-        //    TODO Change service current moderator if role == 'moderator'
+        // Démarre la transaction pour s'assurer que tout se passe de manière atomique
+        DB::transaction(function () use ($validated, $request) {
+            // Récupère l'utilisateur à mettre à jour
+            $user = User::find($request->user_id);
 
-        $user = User::find($request->user_id);
+            // Si l'utilisateur souhaite devenir modérateur
+            if ($validated['role'] === 'moderator') {
+                // Cherche l'actuel modérateur dans le service choisi
+                $currentModerator = User::where('service_id', $validated['service'])
+                    ->where('role', 'moderator')
+                    ->first();
 
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->role = $validated['role'];
-        $user->service_id = $validated['service'];
+                // Si un autre modérateur existe déjà dans ce service, on échange les rôles
+                if ($currentModerator) {
+                    // Change le rôle de l'actuel modérateur en 'member'
+                    $currentModerator->role = 'member';
+                    $currentModerator->save();
+                }
+            }
 
-        $user->save();
+            // Si l'utilisateur est déjà modérateur et souhaite devenir membre
+            if ($user->role === 'moderator' && $validated['role'] === 'member') {
+                // Cherche un autre utilisateur dans le même service pour lui attribuer le rôle de modérateur
+                $newModerator = User::where('service_id', $validated['service'])
+                    ->where('role', 'member')
+                    ->first();
+
+                if ($newModerator) {
+                    // Attribue le rôle de modérateur à un autre utilisateur dans ce service
+                    $newModerator->role = 'moderator';
+                    $newModerator->save();
+                }
+            }
+
+            // Mise à jour de l'utilisateur actuel
+            $user->name = $validated['name'];
+            $user->email = $validated['email'];
+            $user->role = $validated['role'];
+            $user->service_id = $validated['service'];
+
+            // Sauvegarde des changements
+            $user->save();
+        });
+
+        // Optionnel : rediriger ou retourner une réponse
+        return redirect()->route('services.index')->with('success', 'Utilisateur mis à jour avec succès.');
     }
 
     public function destroy(int $id)
