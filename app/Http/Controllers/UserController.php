@@ -47,9 +47,7 @@ class UserController extends Controller
     {
 
         // Récupérer le service associé à la requête
-        $service = Service::find((int) $request->service)->first(['id', 'name']);
-
-        dd($service);
+        $service = Service::find((int) $request->service, ['id', 'name']);
 
         // Récupérer le modérateur du service s'il existe
         $moderator_exists = DB::table('users')
