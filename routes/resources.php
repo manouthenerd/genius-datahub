@@ -5,7 +5,7 @@ use App\Http\Controllers\AdminResourcesController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\FolderController;
 
-Route::get('services/{service}', [AdminResowurcesController::class, 'folders'])->name('resources.folders');
+Route::get('services/{service}', [AdminResourcesController::class, 'folders'])->name('resources.folders');
 Route::get('services/{service}/folders/{folder}', [AdminResourcesController::class, 'files'])->name('resources.files');
 
 Route::post('archives', [ArchiveController::class, 'store'])->name('files.store');
