@@ -45,29 +45,23 @@ class UserController extends Controller
 
     public function addUser(AddUserRequest $request)
     {
+        $validated = $request->validated();
 
-        // Récupérer le service associé à la requête
-        $service = Service::find((int) $request->service, ['id', 'name']);
+        // Création du user (mot de passe aléatoire ou par défaut)
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make('password'), // à gérer selon ton flux d’onboarding
+        ]);
 
-        // Récupérer le modérateur du service s'il existe
-        $moderator_exists = DB::table('users')
-            ->where('service_id', '=', $service->id)
-            ->where('role', '=', 'moderator')
-            ->first(['id', 'name', 'email']);
+        // Attacher l’utilisateur au service
+        $service = Service::findOrFail($validated['service']);
+        $service->members()->attach($user->id);
 
-        // Vérifier si le role de la requête match avec l'existence du modérateur
-        if ($moderator_exists && $request->role == "moderator") {
-            return redirect()->back()->withErrors([
-                'role' => "Le {$service->name} contient déjà un modérateur"
-            ]);
-        }
-
-        User::create([
-            'service_id' => (int) $request->service,
-            'name'       => $request->name,
-            'email'      => $request->email,
-            'role'       => $request->role,
-            'password'   => Hash::make("password")
+        // Retourner via flash pour Inertia
+        return redirect()->back()->with([
+            'success' => 'Membre ajouté avec succès.',
+            'user' => $user, // utile pour @success côté Vue
         ]);
     }
 
