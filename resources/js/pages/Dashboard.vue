@@ -24,7 +24,6 @@ const getUser = computed(() => {
 
 <template>
     <table v-if="getUser == 'admin'" class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-        <!-- TODO Faire passer les avatars en dessous du thead -->
         <tbody>
             <tr class="flex flex-wrap gap-2 p-2">
                 <Link

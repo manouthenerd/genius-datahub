@@ -79,9 +79,9 @@ function getUserRole(role: string): string {
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Membres actuels</p>
-                    <CreateMemberDialog :services="services"/>
+                    <CreateMemberDialog :services="services" />
                 </div>
-                <div class="rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
@@ -162,11 +162,10 @@ function getUserRole(role: string): string {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div class="rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                                <!-- TODO Faire passer les avatars en dessous du thead -->
                                 <thead
                                     class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
                                     <tr>

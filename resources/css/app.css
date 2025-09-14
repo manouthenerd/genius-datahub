@@ -119,6 +119,7 @@
     --sidebar-border: hsl(0 0% 91%);
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
     --sidebar: hsl(0 0% 98%);
+    --smooth-shadow: rgb(156, 149, 149) 1px 1px 1px;
 }
 
 .dark {
@@ -164,4 +165,9 @@
     body {
         @apply bg-background text-foreground;
     }
+}
+
+.table {
+    padding: 2px;
+    box-shadow: var(--smooth-shadow);
 }
