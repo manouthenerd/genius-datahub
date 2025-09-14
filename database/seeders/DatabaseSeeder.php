@@ -17,19 +17,21 @@ class DatabaseSeeder extends Seeder
     {
 
         User::factory()->create([
-            'service_id'        =>  Service::create([
-                'name' => "service communication"
-            ]),
-            'name'              => 'Test User',
-            'email'             => 'test@gmail.com',
+            'service_id'        =>  NULL,
+            'name'              => 'Ray Admin',
+            'email'             => 'admin@gmail.com',
             'role'              => 'admin',
             'password'          => Hash::make('password'),
             'email_verified_at' => now()
-        ]); 
-
-
-        Service::factory()->create([
-            'name' => "service informatique"
         ]);
+
+        User::factory()->create([
+            'service_id'        => Service::factory()->create(),
+            'name'              => fake()->userName(),
+            'email'             => fake()->email(),
+            'role'              => 'moderator',
+            'password'          => Hash::make('password'),
+            'email_verified_at' => now()
+        ]); 
     }
 }
