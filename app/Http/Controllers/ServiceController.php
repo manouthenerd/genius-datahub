@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateServiceRequest;
-use App\Models\Service;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Service;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\CreateServiceRequest;
 
 class ServiceController extends Controller
 {
@@ -47,19 +48,34 @@ class ServiceController extends Controller
         return redirect()->back();
     }
 
-    public function update(Request $request, Service $service): RedirectResponse
+
+    public function update(Request $request, Service $service)
     {
         Gate::authorize('action', Service::class);
 
-        $request->validate([
-            'name' => 'required|string|max:50'
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'moderator' => ['required', 'integer', Rule::exists('users', 'id')],
+            'members' => ['required', 'array', 'min:1'],
+            'members.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
-        $service->name = $request->input('name');
+        // Update du service
+        $service->update([
+            'name' => $validated['name'],
+            'moderator_id' => $validated['moderator'],
+        ]);
 
-        $service->save();
+        User::whereNotIn('id', $validated['members'])
+            ->where('users.service_id', $service->id)
+            ->delete();
 
-        return redirect()->back();
+        // Associer chaque membre au service
+        User::whereIn('id', $validated['members'])
+            ->update(['service_id' => $service->id]);
+
+
+        return redirect()->back()->with('success', 'Service mis à jour avec succès.');
     }
 
     public function destroy(Service $service): RedirectResponse
