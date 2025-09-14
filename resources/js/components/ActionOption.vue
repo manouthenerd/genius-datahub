@@ -6,9 +6,10 @@
             </Button>
         </PopoverTrigger>
         <PopoverContent>
-            <div class="grid">
+            <div class="grid space-y-2">
                 <p class="text-left text-xs text-zinc-400">Actions</p>
                 <Separator />
+                <slot/>
                 <Link
                     v-if="props.showEditLink"
                     :href="props.editLink"
@@ -28,7 +29,6 @@
                 >
                     Supprimer
                 </Link>
-                <slot/>
             </div>
         </PopoverContent>
     </Popover>
