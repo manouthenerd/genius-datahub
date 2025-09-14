@@ -16,6 +16,8 @@ import { dateFormat } from '@/composables/useDateFormat';
 import { Loader } from 'lucide-vue-next';
 import CreateMemberDialog from "@/components/dialog/CreateMemberDialog.vue"
 import EditServiceDialog from "@/components/dialog/EditServiceDialog.vue"
+import { useAlertStore } from '@/stores/alert';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -66,6 +68,10 @@ function getUserRole(role: string): string {
             return 'membre';
     }
 }
+
+
+const alert = useAlertStore()
+alert.message = "Service créé avec succès !";
 
 </script>
 
@@ -142,7 +148,10 @@ function getUserRole(role: string): string {
                                 <DialogTitle> Nouveau service </DialogTitle>
                                 <DialogDescription> Ajouter un nouveau service aux existants </DialogDescription>
                             </DialogHeader>
-                            <Form :action="route('services.store')" method="POST" :reset-on-success="['service_name']"
+                            <Form 
+                                @success="alert.turnAlertOn"
+                                :action="route('services.store')" 
+                                method="POST" :reset-on-success="['service_name']"
                                 v-slot="{ errors, processing }">
                                 <div class="grid gap-4 py-2">
                                     <div class="grid space-y-2">

@@ -4,6 +4,7 @@
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full w-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
             <Form
+                @success="alert.turnAlertOn"
                 :action="route('users.update')"
                 method="put"
                 class="max-w-[540px] rounded bg-white p-4"
@@ -73,9 +74,11 @@ import Input from '@/components/ui/input/Input.vue';
 import Label from '@/components/ui/label/Label.vue';
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useAlertStore } from '@/stores/alert';
 import { type BreadcrumbItem } from '@/types';
 import { Form, Head, useForm } from '@inertiajs/vue3';
 import { Loader } from 'lucide-vue-next';
+
 
 interface User {
     id: number;
@@ -103,4 +106,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: `/users/${props.user.id}`,
     },
 ];
+
+const alert = useAlertStore()
 </script>
