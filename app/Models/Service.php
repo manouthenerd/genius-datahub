@@ -19,7 +19,8 @@ class Service extends Model
 
     protected $fillable = ['name'];
 
-    public function users(): HasMany {
+    public function users(): HasMany
+    {
         return $this->hasMany(User::class);
     }
 
@@ -28,19 +29,27 @@ class Service extends Model
      *
      * @return HasMany
      */
-    public function folders(): HasMany {
+    public function folders(): HasMany
+    {
         return $this->hasMany(Folder::class);
     }
 
-    public function scopeWithName($query) {
+    public function moderator()
+    {
+        return $this->belongsTo(User::class, 'moderator_id');
+    }
+
+    public function scopeWithName($query)
+    {
         return $query->select('id', 'name', 'created_at');
     }
 
-    public static function withModerator() {
+    public static function withModerator()
+    {
 
         $services = self::withName()->get();
-        
-        $services = $services->map(function($item) {
+
+        $services = $services->map(function ($item) {
 
 
             $moderator = $item->users()->where('role', 'moderator')->first(['id', 'name', 'role']);
@@ -52,5 +61,4 @@ class Service extends Model
 
         return $services;
     }
-
 }
