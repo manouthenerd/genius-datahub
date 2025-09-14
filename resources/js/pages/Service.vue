@@ -109,7 +109,7 @@ function getUserRole(role: string): string {
                                             {{ user.email }}
                                         </td>
                                         <td class="px-6 py-2">
-                                            {{ user.service.name }}
+                                            {{ user.service?.name }}
                                         </td>
                                         <td class="px-6 py-2">
                                             {{ getUserRole(user.role) }}
@@ -162,7 +162,7 @@ function getUserRole(role: string): string {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table-shadow rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
