@@ -25,13 +25,8 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now()
         ]);
 
-        User::factory()->create([
-            'service_id'        => Service::factory()->create(),
-            'name'              => fake()->userName(),
-            'email'             => fake()->email(),
+        User::factory(4)->create([
             'role'              => 'moderator',
-            'password'          => Hash::make('password'),
-            'email_verified_at' => now()
         ]); 
     }
 }

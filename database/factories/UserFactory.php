@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'service_id' => Service::factory()->create(),
             'role' => 'admin',
-            'email' => fake()->unique()->safeEmail(),
+            'email' => $this->faker->unique()->email(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
