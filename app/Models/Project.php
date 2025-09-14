@@ -12,9 +12,10 @@ class Project extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'title',
         'description',
         'status',
+        'service_id',
         'tag',
         'priority',
         'from',
