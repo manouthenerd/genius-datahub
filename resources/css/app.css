@@ -167,7 +167,7 @@
     }
 }
 
-.table {
+.table-shadow {
     padding: 2px;
     box-shadow: var(--smooth-shadow);
 }
