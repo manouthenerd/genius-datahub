@@ -22,12 +22,12 @@ class AddUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         return [
-            'name'      => ['string', 'required', 'min:3'],
-            'email'     => ['email', 'required', 'unique:users,email'],
-            'role'      => ['required', Rule::in(['member'])],
-            'service'   => ['required', 'exists:services,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
+            'service' => ['required', 'integer', Rule::exists('services', 'id')],
+            'role' => ['required', 'string', 'in:member,moderator'],
         ];
     }
 }
