@@ -34,11 +34,6 @@ class Service extends Model
         return $this->hasMany(Folder::class);
     }
 
-    public function moderator()
-    {
-        return $this->belongsTo(User::class, 'moderator_id');
-    }
-
     public function scopeWithName($query)
     {
         return $query->select('id', 'name', 'created_at');

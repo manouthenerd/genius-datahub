@@ -81,7 +81,7 @@ function getUserRole(role: string): string {
                     <p class="text-xs text-gray-400">Membres actuels</p>
                     <CreateMemberDialog :services="services" />
                 </div>
-                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table-shadow rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
