@@ -12,14 +12,10 @@
                 <DialogDescription> Ajouter un nouveau membre à ceux déjà existant dans un service
                 </DialogDescription>
             </DialogHeader>
-            <div class="rounded bg-zinc-100 p-2">
-                <!-- TODO: Alert component here -->
-                <Transition>
-                    <p v-if="false" class="rounded-sm bg-blue-100 p-2">Enregistrement effectué avec
-                        succès !</p>
-                </Transition>
-            </div>
-            <Form :action="route('users.create')" method="POST" v-slot="{ errors, processing }"
+            <Form 
+                @success="alert.turnAlertOn"
+                :action="route('users.create')" method="POST" 
+                v-slot="{ errors, processing }"
                 :reset-on-success="['name', 'email']">
                 <div class="grid gap-4 py-2">
                     <div class="grid gap-1">
@@ -68,7 +64,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Form } from '@inertiajs/vue3';
-import { Plus } from 'lucide-vue-next';
+import { Plus, Loader } from 'lucide-vue-next';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import Input from '@/components/ui/input/Input.vue';
 import InputError from '@/components/InputError.vue';
@@ -76,6 +72,7 @@ import SelectInput from '@/components/SelectInput.vue';
 import Label from '@/components/ui/label/Label.vue';
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import { Button } from '@/components/ui/button';
+import { useAlertStore } from '@/stores/alert';
 
 
 interface Services {
@@ -97,4 +94,8 @@ interface Services {
 defineProps<{services: Services[] }>();
 
 const selectedService = ref<number | null>(null);
+
+const alert = useAlertStore();
+
+alert.message = 'Membre créé avec succès !';
 </script>
