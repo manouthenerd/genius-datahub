@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ResourceController;
 use App\Models\Service;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 Route::put('/test', function(Request $request) {
@@ -36,6 +37,11 @@ Route::middleware(["auth"])->group(function () {
 
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.create');
     Route::post('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
+    Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.create');
+    Route::post('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
 Route::get('dashboard', function () {
