@@ -8,9 +8,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import { Bookmark, Plus } from 'lucide-vue-next';
-import { dateFormat } from '@/composables/useDateFormat';
 import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
-// import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
+import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,13 +25,16 @@ interface Project {
     tag: string,
     priority: string,
     description: string,
-    created_at: Date
+    from: string,
+    to: string
 }
 
 interface Service {
     id: number,
     name: string
 }
+
+const frDateFormat = (date: string) => date.split('-').reverse().join('-') 
 
 
 defineProps<{ projects: Project[], services: Service[], service_id: number }>();
@@ -46,7 +48,7 @@ const priorityToFrench = (priority: string) => {
         case "medium":
             return 'moyenne'
             break;
-    
+
         default:
             return "haute"
             break;
@@ -80,7 +82,8 @@ const priorityToFrench = (priority: string) => {
                                         <th scope="col" class="px-2 py-3">Statut</th>
                                         <th scope="col" class="px-2 py-3">Priorité</th>
                                         <th scope="col" class="px-2 py-3">Tâches</th>
-                                        <th scope="col" class="px-2 py-3">Date</th>
+                                        <th scope="col" class="px-2 py-3">Début</th>
+                                        <th scope="col" class="px-2 py-3">Fin</th>
                                         <th scope="col" class="px-2 py-3"></th>
                                     </tr>
                                 </thead>
@@ -99,11 +102,15 @@ const priorityToFrench = (priority: string) => {
                                             </Badge>
                                         </td>
                                         <td class="px-2 py-2">{{ priorityToFrench(project.priority) }}</td>
-                                        <td class="px-2 py-2">2</td>
-                                        <td class="px-2 py-2">{{ dateFormat(String(project.created_at)) }}</td>
+                                        <td class="px-2 py-2">
+                                            <!-- TODO: Afficher le nombre de tâches contenues dans le projet -->
+                                            2
+                                        </td>
+                                        <td class="px-2 py-2">{{ frDateFormat(project.from) }}</td>
+                                        <td class="px-2 py-2">{{ frDateFormat(project.to) }}</td>
                                         <td class="px-2 py-2 text-right">
-                                            <ActionOption :show-edit-link="false">
-                                                <!-- <EditProjectDialog :project/> -->
+                                            <ActionOption :show-edit-link="false" :delete-link="route('projects.destroy', project.id)">
+                                                <EditProjectDialog :project />
                                             </ActionOption>
                                         </td>
                                     </tr>
@@ -202,17 +209,3 @@ const priorityToFrench = (priority: string) => {
         </div>
     </AppLayout>
 </template>
-
-<style scoped>
-.cls-3 {
-    fill: #db5669
-}
-
-.cls-4 {
-    fill: #f26674
-}
-
-.cls-5 {
-    fill: #919191
-}
-</style>
