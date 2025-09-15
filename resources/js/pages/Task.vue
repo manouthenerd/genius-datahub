@@ -6,8 +6,8 @@ import TaskCard from '@/components/ui/card/TaskCard.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import { Bookmark, Plus } from 'lucide-vue-next';
+import { Head, Link } from '@inertiajs/vue3';
+import { Bookmark } from 'lucide-vue-next';
 import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
 import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
 
@@ -26,7 +26,8 @@ interface Project {
     priority: string,
     description: string,
     from: string,
-    to: string
+    to: string,
+    status: string
 }
 
 interface Service {
@@ -51,6 +52,21 @@ const priorityToFrench = (priority: string) => {
 
         default:
             return "haute"
+            break;
+    }
+}
+const statusToFrench = (priority: string) => {
+    switch (priority) {
+        case "in_progress":
+            return 'en cours'
+            break;
+
+        case "pending":
+            return 'en attente'
+            break;
+
+        default:
+            return "achevé"
             break;
     }
 }
@@ -98,7 +114,7 @@ const priorityToFrench = (priority: string) => {
                                         </td>
                                         <td class="px-2 py-2">
                                             <Badge class="bg-green-50 text-black" variant="secondary">
-                                                <span class="size-[5px] rounded-full bg-green-500"></span> En cours
+                                                <span class="size-[5px] rounded-full bg-green-500"></span> {{ statusToFrench(project.status) }}
                                             </Badge>
                                         </td>
                                         <td class="px-2 py-2">{{ priorityToFrench(project.priority) }}</td>
@@ -137,10 +153,9 @@ const priorityToFrench = (priority: string) => {
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Aperçu des tâches</p>
-                    <Button variant="ghost">
-                        <Plus />
+                    <Link :href="route('tasks.create')">
                         Nouvelle tâche
-                    </Button>
+                    </Link>
                 </div>
                 <div
                     class="grid grid-cols-3 gap-2 overflow-x-scroll rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
@@ -176,7 +191,7 @@ const priorityToFrench = (priority: string) => {
                                 <ActionOption />
                             </div>
                         </div>
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
+                        <TaskCard priority="High" tag="Learning" title="Learning LLMs"
                             description="How building LLMs from Scratch"
                             image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
                             :progression="50" />

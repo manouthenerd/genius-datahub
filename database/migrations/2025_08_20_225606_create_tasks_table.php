@@ -14,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Project::class);
+            $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description');
-            $table->enum('status', ['en cours', 'à faire','terminée'])->default('à faire');
+            $table->enum('status', ['in_progress', 'pending','completed'])->default('in_progress');
             $table->string('tag');
             $table->string('image_path')->nullable();
             $table->date('from');
