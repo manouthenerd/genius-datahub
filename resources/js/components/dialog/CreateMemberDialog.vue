@@ -9,7 +9,9 @@
         <DialogContent>
             <DialogHeader>
                 <DialogTitle> Nouveau membre </DialogTitle>
-                <DialogDescription> Ajouter un nouveau membre à ceux déjà existant dans un service
+                <DialogDescription> 
+                    <p>Ajouter un nouveau membre à ceux déjà existant dans un service</p>
+                    <p class="p-2 rounded border-slate-100 border bg-blue-100">Mot de passe par déafut: <span class="font-bold text-blue-900 underline">password@geniusntech</span></p>
                 </DialogDescription>
             </DialogHeader>
             <Form 
