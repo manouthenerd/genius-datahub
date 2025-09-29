@@ -69,4 +69,8 @@ class User extends Authenticatable
         return $query->with('service:id,name');
     }
 
+    public function hasRole(string $role) {
+        return $this->role === $role;
+    }
+
 }
