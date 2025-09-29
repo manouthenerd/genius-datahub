@@ -34,6 +34,10 @@ class Service extends Model
         return $this->hasMany(Folder::class);
     }
 
+    public function projects(): HasMany {
+        return $this->hasMany(Project::class);
+    }
+
     public function scopeWithName($query)
     {
         return $query->select('id', 'name', 'created_at');
