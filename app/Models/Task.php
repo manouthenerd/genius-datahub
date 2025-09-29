@@ -15,9 +15,9 @@ class Task extends Model
         'title',
         'description',
         'tag',
+        'project_id',
         'status',
         'priority',
-        'image_path',
         'from',
         'to'
     ];
