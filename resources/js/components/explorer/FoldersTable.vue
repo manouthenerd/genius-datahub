@@ -1,6 +1,5 @@
 <template>
     <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-        <!-- TODO Faire passer les avatars en dessous du thead -->
         <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">Nom</th>
@@ -19,7 +18,7 @@
                             </div>
                             <Form
                                 method="POST"
-                                :action="route('folders.store')"
+                                :action="route('folders.store', {service: service.id})"
                                 :reset-on-success="['name']"
                                 v-slot="{ errors, processing }"
                                 class="grid gap-2"
