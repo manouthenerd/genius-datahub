@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateFolderRequest;
 use App\Models\Folder;
-use App\Policies\FolderPolicy;
-use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Http\Request;
 
 // #[UsePolicy(FolderPolicy::class)]
@@ -14,6 +12,8 @@ class FolderController extends Controller
 
     public function store(Request $request)
     {
+
+        $service_id = (int) $request->query('service');
         
         $validated = $request->validate(['name' => 'required|string|max:100']);
 
@@ -21,7 +21,7 @@ class FolderController extends Controller
 
         Folder::create([
             'user_id' => $user->id,
-            'service_id' => $user->service_id,
+            'service_id' => $user->hasRole('admin') ? $service_id : $user->service_id,
             'name' => $validated['name']
         ]);
 
