@@ -10,6 +10,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import { Bookmark } from 'lucide-vue-next';
 import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
 import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
+import { onMounted } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -30,15 +31,25 @@ interface Project {
     status: string
 }
 
+interface Task {
+    id: number,
+    title: string,
+    tag: string,
+    status: string,
+    from: string,
+    to: string,
+    description: string
+}
+
 interface Service {
     id: number,
     name: string
 }
 
-const frDateFormat = (date: string) => date.split('-').reverse().join('-') 
+const frDateFormat = (date: string) => date.split('-').reverse().join('-')
 
 
-defineProps<{ projects: Project[], services: Service[], service_id: number }>();
+const props = defineProps<{ projects: Project[], tasks: Task[], services: Service[], service_id: number }>();
 
 const priorityToFrench = (priority: string) => {
     switch (priority) {
@@ -71,6 +82,51 @@ const statusToFrench = (priority: string) => {
     }
 }
 
+const priorityBadgeColor = (priority: string) => {
+    switch (priority) {
+        case "low":
+            return {
+                dot: "bg-blue-500",
+                badge: "bg-blue-100",
+            }
+            break;
+
+        case "medium":
+            return {
+                dot: "bg-orange-500",
+                badge: "bg-orange-100",
+            }
+            break;
+
+        default:
+            return {
+                dot: "bg-red-500",
+                badge: "bg-red-100",
+            }
+            break;
+    }
+}
+
+function tasksInProgress() {
+    return props.tasks.filter((task) => {
+        return task.status == 'in_progress'
+    })
+}
+function tasksCompleted() {
+    return props.tasks.filter((task) => {
+        return task.status == 'completed'
+    })
+}
+function tasksInPending() {
+    return props.tasks.filter((task) => {
+        return task.status == 'pending'
+    })
+}
+
+onMounted(() => {
+    console.log(tasksInProgress(), tasksInPending(), tasksCompleted())
+
+})
 </script>
 
 <template>
@@ -114,18 +170,27 @@ const statusToFrench = (priority: string) => {
                                         </td>
                                         <td class="px-2 py-2">
                                             <Badge class="bg-green-50 text-black" variant="secondary">
-                                                <span class="size-[5px] rounded-full bg-green-500"></span> {{ statusToFrench(project.status) }}
+                                                <span class="size-[5px] rounded-full bg-green-500"></span> {{
+                                                    statusToFrench(project.status) }}
                                             </Badge>
                                         </td>
-                                        <td class="px-2 py-2">{{ priorityToFrench(project.priority) }}</td>
                                         <td class="px-2 py-2">
+                                            <Badge :class="priorityBadgeColor(project.priority).badge"
+                                                class="text-black" variant="secondary">
+                                                <span :class="priorityBadgeColor(project.priority).dot"
+                                                    class="size-[5px] rounded-full"></span> {{
+                                                        priorityToFrench(project.priority) }}
+                                            </Badge>
+                                        </td>
+                                        <td class="px-2 py-2 text-center">
                                             <!-- TODO: Afficher le nombre de tâches contenues dans le projet -->
                                             2
                                         </td>
                                         <td class="px-2 py-2">{{ frDateFormat(project.from) }}</td>
                                         <td class="px-2 py-2">{{ frDateFormat(project.to) }}</td>
                                         <td class="px-2 py-2 text-right">
-                                            <ActionOption :show-edit-link="false" :delete-link="route('projects.destroy', project.id)">
+                                            <ActionOption :show-edit-link="false"
+                                                :delete-link="route('projects.destroy', project.id)">
                                                 <EditProjectDialog :project />
                                             </ActionOption>
                                         </td>
@@ -154,71 +219,107 @@ const statusToFrench = (priority: string) => {
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Aperçu des tâches</p>
                     <Link :href="route('tasks.create')">
-                        Nouvelle tâche
+                    Nouvelle tâche
                     </Link>
                 </div>
                 <div
                     class="grid grid-cols-3 gap-2 overflow-x-scroll rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-zinc-100 p-2">
+
+                    <!--Pending Tasks -->
+                    <ScrollArea v-if="tasksInPending().length"
+                        class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-zinc-100 p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
                             <p class="rounded bg-gray-300 p-1">A Faire</p>
                             <Button variant="ghost">
-                                10
+                                {{ tasksInPending()?.length ?? 0 }}
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
-                            description="About The Best PHP Framework Ever."
-                            image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
-                            description="About The Best PHP Framework Ever."
-                            image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
-                        <TaskCard priority="Normal" tag="Programming" title="Laravel Framework"
-                            description="About The Best PHP Framework Ever."
-                            image="https://webandcrafts.com/_next/image?url=https%3A%2F%2Fadmin.wac.co%2Fuploads%2F10_Great_Sites_Built_with_Laravel_Framework_0e893c2354.jpg&w=4500&q=90"
-                            :progression="40" />
+                        <TaskCard v-for="task in tasksInPending()" :href="route('tasks.edit', { task: task.id })"
+                            :key="task.id" :priority="task.title" :tag="task.tag" :title="task.title"
+                            :description="task.description" image="/image/genius-3D.png" :progression="40" />
+
                     </ScrollArea>
 
-                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-blue-50 p-2">
+                    <div v-else class="px-0.5 grid">
+                        <div class="flex items-center justify-between mb-14">
+                            <p class="rounded bg-gray-300 p-1">A Faire</p>
+                            <Button variant="ghost">
+                                0
+                                <Bookmark />
+                            </Button>
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="/image/task.svg" alt="task illustration">
+
+                        </div>
+                        <p class="text-center text-xs mt-4">Aucune tâche <span
+                                class="text-blue-900 font-bold underline">à faire</span></p>
+                    </div>
+
+                    <!-- In progress Tasks -->
+                    <ScrollArea v-if="tasksInProgress()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-blue-100 p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
                             <p class="rounded bg-blue-300 p-1">En cours</p>
-                            <div class="flex">
-                                <Button variant="link">
-                                    <Plus />
-                                </Button>
-                                <ActionOption />
-                            </div>
+                            <Button variant="ghost">
+                                {{ tasksInProgress()?.length ?? 0 }}
+                                <Bookmark />
+                            </Button>
                         </div>
-                        <TaskCard priority="High" tag="Learning" title="Learning LLMs"
-                            description="How building LLMs from Scratch"
-                            image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
-                            description="How building LLMs from Scratch"
-                            image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
-                        <TaskCard priority="Hight" tag="Learning" title="Learning LLMs"
-                            description="How building LLMs from Scratch"
-                            image="https://simseo.fr/wp-content/uploads/2024/05/1715818927_Lavancee-des-LLM-les-performances-et-les-defauts-qui.jpeg"
-                            :progression="50" />
+                        <TaskCard class=" hover:cursor-[url('/image/cursor.svg')]" v-for="task in tasksInProgress()"
+                            :href="route('tasks.edit', { task: task.id })" :key="task.id" :priority="task.title"
+                            :tag="task.tag" :title="task.title" :description="task.description"
+                            image="/image/genius-3D.png" :progression="40" />
+
                     </ScrollArea>
 
-                    <ScrollArea class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-green-50 p-2">
+                    <div v-else class="px-0.5 grid">
+                        <div class="flex items-center justify-between mb-14">
+                            <p class="rounded bg-gray-300 p-1">En cours</p>
+                            <Button variant="ghost">
+                                {{ 0 }}
+                                <Bookmark />
+                            </Button>
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="/image/task-todo.svg" alt="task illustration">
+
+                        </div>
+                        <p class="text-center text-xs mt-4">Aucune tâche <span
+                                class="text-blue-900 font-bold underline">en cours</span></p>
+                    </div>
+
+                    <!-- Completed Tasks -->
+                    <ScrollArea v-if="tasksCompleted()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-green-100 p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
                             <p class="rounded bg-green-300 p-1">Terminées</p>
-                            <div class="flex">
-                                <Button variant="link">
-                                    <Plus />
-                                </Button>
-                                <ActionOption />
-                            </div>
+                            <Button variant="ghost">
+                                {{ tasksCompleted()?.length ?? 0 }}
+                                <Bookmark />
+                            </Button>
                         </div>
-                        <TaskCard priority="Low" tag="Mission" title="Vidéosurveillance"
-                            description="Comment installer une caméra"
-                            image="https://ticou.net/site/assets/images/videosurveillance.jpg" :progression="50" />
+                        <TaskCard v-for="task in tasksCompleted()" :key="task.id" :priority="task.title" :tag="task.tag"
+                            :title="task.title" :description="task.description" image="/image/genius-3D.png"
+                            :href="route('tasks.edit', { task: task.id })" :progression="40" />
+
                     </ScrollArea>
+
+                    <div v-else class="px-0.5 grid">
+                        <div class="flex items-center justify-between mb-14">
+                            <p class="rounded bg-gray-300 p-1">Terminées</p>
+                            <Button variant="ghost">
+                                {{ 0 }}
+                                <Bookmark />
+                            </Button>
+                        </div>
+                        <div class="flex justify-center">
+                            <img src="/image/task-completed.svg" alt="task illustration">
+
+                        </div>
+                        <p class="text-center text-xs mt-4">Aucune tâche <span
+                                class="text-blue-900 font-bold underline">terminée</span></p>
+                    </div>
+
                 </div>
             </div>
         </div>
