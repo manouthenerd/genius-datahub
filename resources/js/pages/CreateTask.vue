@@ -2,39 +2,23 @@
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex justify-center h-full w-full gap-4 overflow-x-auto rounded-xl p-4">
             <div class="w-xl">
-                <Form @success="alert.turnAlertOn" :action="route('projects.create')" method="POST"
+                <Form @success="alert.turnAlertOn" :action="route('tasks')" method="POST"
                     v-slot="{ errors, processing }"
-                    :reset-on-success="['title', 'email', 'tag', 'from', 'to', 'description']">
+                    :reset-on-success="['title', 'tag', 'from', 'to', 'description']">
                     <div class="grid gap-4 py-2 space-y-2">
                         <div class="grid gap-1">
                             <Label for="title">Libellé de la tâche </Label>
-                            <Input required id="title" placeholder="Entrer un libellé pour votre projet" name="title"
+                            <Input required id="title" placeholder="Entrer un libellé pour la tâche" name="title"
                                 class="ring-transparent! h-[40px] bg-white  focus:border-slate-500!" />
                             <InputError :message="errors.title" />
                         </div>
                         <div class="grid gap-1">
                             <Label for="tag"> Tag</Label>
-                            <Input required id="tag" name="tag" placeholder="ex: vidéosurveillance"
+                            <Input required id="tag" name="tag" placeholder="ex: câblage"
                                 class="ring-transparent! h-[40px] bg-white  focus:border-slate-500!" />
                             <InputError :message="errors.tag" />
                         </div>
-                        <div class="grid gap-1">
-                            <Label for="image_path">Image d'illustration <Tag>(facultatif)</Tag></Label>
-                            <Input type="file" id="image_path" name="image_path"
-                                class="ring-transparent! pt-[8px] h-[40px] bg-white  focus:border-slate-500!" />
-                            <InputError :message="errors.image_path" />
-                        </div>
-                        <div v-if="userHasRole('admin')" class="grid gap-1">
-                            <Label for="service_id">Projet associé à la tâche</Label>
-                            <SelectInput class="bg-white" :required="userHasRole('admin')" name="service_id" v-model="selectedProject"
-                                placeholder="Choix du service">
-                                <SelectItem v-for="project in projects" :value="project.id" :key="project.id">
-                                    {{ project.title }}
-                                </SelectItem>
-                            </SelectInput>
-                            <InputError :message="errors.service_id" />
-                        </div>
-                        <input v-else type="hidden" name="service_id" :value="service_id">
+
                         <div class="grid gap-1">
                             <Label for="priority">Niveau de priorité</Label>
 
@@ -51,6 +35,20 @@
                                 </option>
                             </select>
                             <InputError :message="errors.priority" />
+                        </div>
+
+                        <div class="grid gap-1">
+                            <Label for="projet_id">Ajouter au projet:</Label>
+
+                            <select required class="ring-transparent! px-3 border border-input h-[40px] bg-white rounded-md shadow-xs focus:border-slate-500" name="project_id" v-model="selectedProject">
+                                
+                                <option class="text-black" v-for="project in projects" :key="project.id" :value="project.id">
+                                   {{ project.title }} ({{ project.service.name }})
+                                </option>
+                               
+                            </select>
+                            
+                            <InputError :message="errors.project_id" />
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
@@ -92,21 +90,17 @@
 </template>
 
 <script setup lang="ts">
-import { Form, usePage } from '@inertiajs/vue3';
+import { Form } from '@inertiajs/vue3';
 import { Loader } from 'lucide-vue-next';
 import Input from '@/components/ui/input/Input.vue';
 import InputError from '@/components/InputError.vue';
-import SelectInput from '@/components/SelectInput.vue';
 import Label from '@/components/ui/label/Label.vue';
-import SelectItem from '@/components/ui/select/SelectItem.vue';
 import { Button } from '@/components/ui/button';
 import Textarea from "@/components/ui/textarea/Textarea.vue";
 import { useAlertStore } from '@/stores/alert';
 import { ref } from 'vue';
 import { type BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/AppLayout.vue';
-
-
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -115,21 +109,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-
 const alert = useAlertStore()
-
-const selectedProject = ref('');
-const user: User = usePage().props.auth.user;
-
 
 interface Project {
     id: number,
     title: string,
-    tag: string,
-    priority: string,
-    description: string,
-    from: string,
-    to: string
+    service: {
+        id: number,
+        name:string
+    }
 }
 
 interface User {
@@ -139,16 +127,7 @@ interface User {
     email?: string
 }
 
-function userHasRole(role: string): boolean {
-    return user.role == role;
-}
+const props = defineProps<{ projects: Project[], users: User[], service_id: number }>();
 
-defineProps<{ projects: Project[], users: User[], service_id: number }>();
-
+const selectedProject = ref(props.projects.length ? props.projects[0].id : '');
 </script>
-
-<style scoped>
-.data-[placeholder]:text-muted-foreground {
-    background-color: white !important;
-}
-</style>
