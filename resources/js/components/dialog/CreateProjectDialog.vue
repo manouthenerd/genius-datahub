@@ -14,7 +14,7 @@
             </DialogHeader>
             <Form @success="alert.turnAlertOn" :action="route('projects.create')" method="POST"
                 v-slot="{ errors, processing }"
-                :reset-on-success="['name', 'email', 'tag', 'from', 'to', 'description']">
+                :reset-on-success="['title', 'email', 'tag', 'from', 'to', 'description']">
                 <div class="grid gap-4 py-2">
                     <div class="grid gap-1">
                         <Label for="title">Libellé du projet </Label>
