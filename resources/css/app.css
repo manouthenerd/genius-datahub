@@ -171,3 +171,9 @@
     padding: 2px;
     box-shadow: var(--smooth-shadow);
 }
+
+#uploadBox {
+    border: 1.5px dashed #0074b8;
+    border-radius: 4px;
+     background-color: #0075b81a;
+}
