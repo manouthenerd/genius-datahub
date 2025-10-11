@@ -39,6 +39,7 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 
+    Route::get('/task-users/{service}', [TaskController::class, 'getUsers'])->name('task-users');
     Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks');
     Route::get('/tasks/{task}', [TaskController::class, 'edit'])->name('tasks.edit');
