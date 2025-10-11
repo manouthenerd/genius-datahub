@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Service;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
@@ -27,17 +28,25 @@ class TaskController extends Controller
 
     public function create()
     {
-
         return Inertia::render('CreateTask', [
             'projects' => Project::with('service')->get(),
         ]);
     }
 
+    public function getUsers(Service $service) {
+        $users = $service->users()->get(['id', 'name']) ?? [];
+
+        return $users->toJson();
+    }
+
     public function store(CreateTaskRequest $request)
     {
-        $validated = $request->validated();
 
+        $validated = $request->validated();
+        
         $task = Task::create($validated);
+
+        $task->users()->attach($validated['users'], ['created_at' => now(), 'updated_at' => now()]);
 
         return redirect()->back();
     }
@@ -51,7 +60,7 @@ class TaskController extends Controller
         return redirect()->back();
     }
 
-    public function edit(Request $request, Task $task)
+    public function edit(CreateTaskRequest $request, Task $task)
     {   
 
         $user = $request->user();
