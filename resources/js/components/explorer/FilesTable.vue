@@ -17,13 +17,10 @@
                         <div>
                             <ScrollArea class="h-56 p-4 border border-neutral-200 rounded mt-4">
 
-                                <FilePond 
-                                    name="file" 
-                                    ref="filepondFilesInput" class-name="my-pond"
+                                <FilePond name="file" ref="filepondFilesInput" class-name="my-pond"
                                     allow-multiple="false" @init="handleFilePondInit"
                                     @processfile="handleFilePondFilesProcess"
-                                    @removefile="handleFilePondFilesRemoveFile" 
-                                />
+                                    @removefile="handleFilePondFilesRemoveFile" />
 
                                 <input type="hidden" name="folder_id" id="folder_id" :value="folder_id">
 
@@ -58,6 +55,7 @@
                     class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                     <Link :href="route('resources.folders', [service.id])">
                     <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <span class="text-slate-400 text-xs">/ {{ folder.name }}</span>
                     </Link>
                 </th>
             </tr>
@@ -130,6 +128,7 @@
                     class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                     <Link :href="route('resources.folders', service.id)">
                     <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <span class="text-slate-400 text-xs">/ {{ folder.name }}</span>
                     </Link>
                 </th>
             </tr>
@@ -172,7 +171,7 @@
                             Cliquez ici pour en ajouter
                         </Label>
                     </p>
-
+                    <!-- TODO: Real time loading -->
                 </th>
             </tr>
         </tbody>
@@ -233,7 +232,7 @@ interface Service {
 
 const alert = useAlertStore()
 
-const props = defineProps<{ files: Files[]; service: Service, folder_id: number }>();
+const props = defineProps<{ files: Files[]; service: Service, folder: {id: number, name: string} }>();
 
 
 const FilePond = vueFilePond(
@@ -250,7 +249,7 @@ const filepondFilesInput = ref(null);
 const form = useForm({
 
     files: [],
-    folder_id: props.folder_id
+    folder_id: props.folder.id
 });
 
 // Set global options on filepond init
@@ -263,7 +262,7 @@ const handleFilePondInit = () => {
             process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('folder_id', props.folder_id.toString());
+                formData.append('folder_id', props.folder.id.toString());
 
                 const request = new XMLHttpRequest();
                 request.open('POST', route('files.store'));
@@ -282,7 +281,7 @@ const handleFilePondInit = () => {
                         if (filepondFilesInput.value) {
                             filepondFilesInput.value.removeFile(file);
                         }
-                        load(request.responseText); 
+                        load(request.responseText);
 
                         alert.message = "Téléversement effectué avec succès !"
                         alert.turnAlertOn()
