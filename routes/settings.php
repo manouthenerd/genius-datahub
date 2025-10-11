@@ -4,7 +4,6 @@ use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Middleware\EnsureIsAuth;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware([EnsureIsAuth::class])->group(function () {
     Route::redirect('settings', '/settings/profile');
