@@ -214,7 +214,6 @@ import vueFilePond, { setOptions } from 'vue-filepond';
 
 
 import 'filepond/dist/filepond.min.css';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 
 import { useAlertStore } from '@/stores/alert';
 
