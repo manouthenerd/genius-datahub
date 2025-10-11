@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks_users', function (Blueprint $table) {
+        Schema::create('task_user', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Task::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
@@ -26,7 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks_users');
+        Schema::dropIfExists('task_user');
         
     }
 };
