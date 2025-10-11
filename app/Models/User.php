@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Support\Collection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -51,6 +52,11 @@ class User extends Authenticatable
 
     public function service() {
         return $this->belongsTo(Service::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
     }
 
      /**
