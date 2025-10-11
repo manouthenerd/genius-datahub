@@ -1,5 +1,5 @@
 <template>
-    <FilesTable :files :service />
+    <FilesTable :files :service :folder_id />
 </template>
 
 <script setup lang="ts">
@@ -18,7 +18,7 @@ interface Service {
     name: string;
 }
 
-defineProps<{ files: File[]; service: Service }>();
+defineProps<{ files: File[]; service: Service, folder_id: number }>();
 
 defineOptions({ layout: ResourcesLayout });
 </script>

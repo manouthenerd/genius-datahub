@@ -4,7 +4,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BriefcaseBusiness, Building, HardDrive, LayoutGrid } from 'lucide-vue-next';
+import { BriefcaseBusiness, Building, LayoutGrid } from 'lucide-vue-next';
 
 const mainNavItems: NavItem[] = [
     {
@@ -23,11 +23,6 @@ const mainNavItems: NavItem[] = [
         icon: BriefcaseBusiness,
     },
 
-    {
-        title: 'ressources',
-        href: '/resources',
-        icon: HardDrive,
-    },
 ];
 </script>
 

@@ -2,27 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateArchiveRequest;
 use App\Models\Archive;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArchiveController extends Controller
 {
-    public function update(UpdateArchiveRequest $request, Archive $archive) 
+    /**
+     * Stocke un ou plusieurs fichiers dans la table archives.
+     */
+
+
+    public function store(Request $request)
     {
+        $userId = $request->user()->id;
 
-        Gate::authorize('update', $archive);
+        $folderId = (int) $request->folder_id;
 
-        $archive->name = $request->validated('name');
+        $path = $request->file('file')->store('uploads', 'public');
 
-        $archive->save();
+        $data = [
+            'name' => $request->file('file')->getClientOriginalName(),
+            'size' => round($request->file('file')->getSize() / 1048576, 2), // Mo
+            'path' => $path,
+            'user_id' => $userId,
+            'folder_id' => $folderId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ];
 
-        return redirect()->back();
+
+        Archive::create($data);
+
+        return redirect()->back()->with('success', 'Fichiers téléversés avec succès.');
     }
 
-    public function destroy(Archive $archive) {
-        Gate::authorize('delete', $archive);
+    /**
+     * Met à jour le nom ou le dossier d’un fichier existant.
+     */
+    public function update(Request $request, Archive $archive)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'folder_id' => 'nullable|exists:folders,id',
+        ]);
 
-        $deleted = $archive->delete();
+        $archive->name = $request->name;
+        if ($request->filled('folder_id')) {
+            $archive->folder_id = $request->folder_id;
+        }
+        $archive->save();
+
+        return response()->json([
+            'success' => true,
+            'id' => $archive->id,
+            'name' => $archive->name,
+            'size' => $archive->size,
+            'path' => $archive->path,
+        ]);
+    }
+
+    /**
+     * Supprime un fichier à la fois de la base et du storage.
+     */
+    public function destroy(Archive $archive)
+    {
+        // Supprimer le fichier du storage
+        if (Storage::disk('public')->exists($archive->path)) {
+            Storage::disk('public')->delete($archive->path);
+        }
+
+        // Supprimer l’enregistrement de la base
+        $archive->delete();
+
+        return back()->with('success', 'Fichier supprimé avec succès.');
     }
 }

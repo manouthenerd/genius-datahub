@@ -45,14 +45,14 @@ const breadcrumbs: BreadcrumbItem[] = [
                         class="h-[100px] rounded-xl border border-sidebar-border/70 bg-blue-50 p-2 dark:border-sidebar-border"
                     >
                         <div class="flex items-center justify-between">
-                            <p class="text-2xl">120 tâches</p>
+                            <p class="text-2xl">20 tâches</p>
                             <Link>
                                 <ArrowUpRight color="#0074B8" />
                             </Link>
                         </div>
                         <div class="mt-4 flex items-center justify-between">
                             <Progress class="w-1/2" :model-value="20" />
-                            <p class="text-xs font-bold">40/120</p>
+                            <p class="text-xs font-bold">04/20</p>
                         </div>
                     </div>
                 </div>
@@ -66,11 +66,11 @@ const breadcrumbs: BreadcrumbItem[] = [
                     >
                         <div class="flex items-center justify-between">
                             <div class="grid place-content-center text-2xl">
-                                <p class="font-bold">02</p>
+                                <p class="font-bold">03</p>
                                 <Building class="mt-2 hover:stroke-[#162456]" />
                             </div>
                             <div class="grid place-content-center text-2xl">
-                                <p class="font-bold">02</p>
+                                <p class="font-bold">08</p>
                                 <UsersRound class="mt-2 hover:stroke-[#162456]" />
                             </div>
                             <div class="grid place-content-center text-2xl">
@@ -78,7 +78,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 <FolderClosedIcon class="mt-2 hover:stroke-[#162456]" />
                             </div>
                             <div class="grid place-content-center text-2xl">
-                                <p class="font-bold">250</p>
+                                <p class="font-bold">109</p>
                                 <FileArchiveIcon class="mt-2 hover:stroke-[#162456]" />
                             </div>
                         </div>

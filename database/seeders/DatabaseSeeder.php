@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'service_id'        =>  NULL,
-            'name'              => 'Ray Admin',
+                'name'              => 'Ray Admin',
             'email'             => 'admin@gmail.com',
             'role'              => 'admin',
             'password'          => Hash::make('password'),
@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
 
         User::factory(4)->create([
             'role'              => 'moderator',
-        ]); 
+        ]);
     }
 }

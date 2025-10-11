@@ -41,7 +41,7 @@ class AdminResourcesController extends Controller
 
         $files = $folders->archives()->get(['id', 'name', 'size', 'updated_at']);
 
-        return Inertia::render('admin/ServiceFiles', ['files' => $files, 'service' => $service]);
+        return Inertia::render('admin/ServiceFiles', ['files' => $files, 'service' => $service, 'folder_id' => $folder]);
     }
 
 

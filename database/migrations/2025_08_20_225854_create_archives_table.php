@@ -15,10 +15,14 @@ return new class extends Migration
     {
         Schema::create('archives', function (Blueprint $table) {
             $table->id();
+                        
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Folder::class)->constrained()->cascadeOnDelete();
+            
             $table->string('name');
-            $table->integer('size');
+            $table->decimal('size', 8, 2);
+            $table->string('path');
+            
             $table->timestamps();
         });
     }

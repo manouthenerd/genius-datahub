@@ -1,4 +1,43 @@
 <template>
+
+    <div>
+        <AlertDialog v-model:open="open">
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>
+                        <div class="flex justify-between items-center">
+                            <p>Téléversement fichiers</p>
+                            <X class="text-neutral-500 transition-colors hover:text-black text-shadow"
+                                @click="closeUploadingModal" />
+                        </div>
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+
+
+                        <div>
+                            <ScrollArea class="h-56 p-4 border border-neutral-200 rounded mt-4">
+
+                                <FilePond 
+                                    name="file" 
+                                    ref="filepondFilesInput" class-name="my-pond"
+                                    allow-multiple="false" @init="handleFilePondInit"
+                                    @processfile="handleFilePondFilesProcess"
+                                    @removefile="handleFilePondFilesRemoveFile" 
+                                />
+
+                                <input type="hidden" name="folder_id" id="folder_id" :value="folder_id">
+
+                            </ScrollArea>
+
+                        </div>
+
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+
+            </AlertDialogContent>
+        </AlertDialog>
+    </div>
+
     <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
         <thead
             class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
@@ -7,12 +46,9 @@
                 <th scope="col" class="px-6 py-3">Taille</th>
                 <th scope="col" class="px-6 py-3">Modifié le</th>
                 <th>
-                    <Form>
-                        <Label for="picture" class="rounded-full p-2 bg-black">
-                            <img for="picture" src="/image/upload.svg" alt="upload icon">
-                        </Label>
-                        <Input id="picture" type="file" hidden />
-                    </Form>
+                    <Label @click="openUploadingModal" class="rounded-full cursor-pointer p-2 bg-black">
+                        <img src="/image/upload.svg" alt="upload icon">
+                    </Label>
                 </th>
             </tr>
         </thead>
@@ -74,7 +110,7 @@
                             </Button>
                         </ContextMenuItem>
                         <ContextMenuItem>
-                            <Form method="DELETE" :action="route('files.destroy', { archive: Number(file.id) })">
+                            <Form method="delete" :action="route('files.destroy', { archive: Number(file.id) })">
                                 <Button style="color: red" class="hover:text-red-500" variant="link">
                                     <Trash color="red" /> Supprimer
                                 </Button>
@@ -88,7 +124,6 @@
                 </td>
             </tr>
         </tbody>
-
         <tbody v-else class="w-full space-y-2">
             <tr>
                 <th scope="row"
@@ -132,7 +167,8 @@
                 <th colspan="5" class="text-center">
                     <p class="grid place-content-center gap-1 mt-4 w-full p-2 text-center text-sm text-black">
                         <span>Aucun fichier trouvé.</span>
-                        <Label for="picture" class="text-[#cf9c0d] p-1 rounded bg-black font-bold text-center underline cursor-pointer">
+                        <Label @click="openUploadingModal"
+                            class="text-[#cf9c0d] p-1 rounded bg-black font-bold text-center underline cursor-pointer">
                             Cliquez ici pour en ajouter
                         </Label>
                     </p>
@@ -140,12 +176,14 @@
                 </th>
             </tr>
         </tbody>
+
     </table>
+
 </template>
 
 <script setup lang="ts">
-import { Form, Link } from '@inertiajs/vue3';
-import { Download, Ellipsis, File, Loader2Icon, Trash } from 'lucide-vue-next';
+import { useForm, Form, Link, usePage } from '@inertiajs/vue3';
+import { Download, Ellipsis, File, Loader2Icon, Trash, X } from 'lucide-vue-next';
 import { ref } from 'vue';
 import InputError from '../InputError.vue';
 import Button from '../ui/button/Button.vue';
@@ -158,9 +196,28 @@ import {
     ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from '../ui/context-menu';
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 import Input from '../ui/input/Input.vue';
 import Label from '../ui/label/Label.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
+
+import "filepond/dist/filepond.min.css";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+
+import vueFilePond, { setOptions } from 'vue-filepond';
+
+
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+
+import { useAlertStore } from '@/stores/alert';
 
 interface Files {
     id: number;
@@ -174,9 +231,96 @@ interface Service {
     name: string;
 }
 
-defineProps<{ files: Files[]; service: Service }>();
+const alert = useAlertStore()
+
+const props = defineProps<{ files: Files[]; service: Service, folder_id: number }>();
+
+
+const FilePond = vueFilePond(
+    FilePondPluginFileValidateType,
+);
+
+const token = usePage().props.csrf_token
 
 const showContext = ref(true);
+const open = ref(false)
+
+const filepondFilesInput = ref(null);
+
+const form = useForm({
+
+    files: [],
+    folder_id: props.folder_id
+});
+
+// Set global options on filepond init
+const handleFilePondInit = () => {
+    setOptions({
+        chunkUploads: true,
+        credits: false,
+        instantUpload: false,
+        server: {
+            process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('folder_id', props.folder_id.toString());
+
+                const request = new XMLHttpRequest();
+                request.open('POST', route('files.store'));
+
+                // CSRF Token
+                request.setRequestHeader('X-CSRF-TOKEN', token);
+
+                // Suivi de la progression
+                request.upload.onprogress = (e) => {
+                    progress(e.lengthComputable, e.loaded, e.total);
+                };
+
+                request.onload = () => {
+                    if (request.status >= 200 && request.status < 300) {
+                        // Supprimer le fichier du FilePond après succès
+                        if (filepondFilesInput.value) {
+                            filepondFilesInput.value.removeFile(file);
+                        }
+                        load(request.responseText); 
+
+                        alert.message = "Téléversement effectué avec succès !"
+                        alert.turnAlertOn()
+                    } else {
+                        error('Erreur lors de l’upload');
+                    }
+                };
+
+                request.onerror = () => {
+                    error('Erreur réseau');
+                };
+
+                request.send(formData);
+
+                // Fonction d’annulation
+                return {
+                    abort: () => {
+                        request.abort();
+                        abort();
+                    }
+                };
+            },
+            revert: null,
+            restore: null,
+            load: null,
+        },
+    });
+};
+
+const handleFilePondFilesProcess = (error, file) => {
+    form.files.push({ id: file.id, serverId: file.serverId });
+    handleFilePondFilesRemoveFile(error, file)
+};
+
+// Remove the server id on file remove
+const handleFilePondFilesRemoveFile = (error, file) => {
+    form.files = form.files.filter(item => item.id !== file.id);
+}
 
 const updateContextState = () => {
     showContext.value = false;
@@ -185,4 +329,12 @@ const updateContextState = () => {
         showContext.value = true;
     }, 2000);
 };
+
+const openUploadingModal = () => {
+    open.value = true;
+}
+
+const closeUploadingModal = () => {
+    open.value = false;
+}
 </script>
