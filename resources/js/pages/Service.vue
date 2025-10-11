@@ -16,6 +16,8 @@ import { dateFormat } from '@/composables/useDateFormat';
 import { Loader } from 'lucide-vue-next';
 import CreateMemberDialog from "@/components/dialog/CreateMemberDialog.vue"
 import EditServiceDialog from "@/components/dialog/EditServiceDialog.vue"
+import { useAlertStore } from '@/stores/alert';
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -67,6 +69,10 @@ function getUserRole(role: string): string {
     }
 }
 
+
+const alert = useAlertStore()
+alert.message = "Service créé avec succès !";
+
 </script>
 
 <template>
@@ -81,7 +87,7 @@ function getUserRole(role: string): string {
                     <p class="text-xs text-gray-400">Membres actuels</p>
                     <CreateMemberDialog :services="services" />
                 </div>
-                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table-shadow rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
@@ -109,7 +115,7 @@ function getUserRole(role: string): string {
                                             {{ user.email }}
                                         </td>
                                         <td class="px-6 py-2">
-                                            {{ user.service.name }}
+                                            {{ user.service?.name }}
                                         </td>
                                         <td class="px-6 py-2">
                                             {{ getUserRole(user.role) }}
@@ -142,7 +148,10 @@ function getUserRole(role: string): string {
                                 <DialogTitle> Nouveau service </DialogTitle>
                                 <DialogDescription> Ajouter un nouveau service aux existants </DialogDescription>
                             </DialogHeader>
-                            <Form :action="route('services.store')" method="POST" :reset-on-success="['service_name']"
+                            <Form 
+                                @success="alert.turnAlertOn"
+                                :action="route('services.store')" 
+                                method="POST" :reset-on-success="['service_name']"
                                 v-slot="{ errors, processing }">
                                 <div class="grid gap-4 py-2">
                                     <div class="grid space-y-2">
@@ -162,7 +171,7 @@ function getUserRole(role: string): string {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div class="table rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
+                <div class="table-shadow rounded-xl border border-sidebar-border/70 bg-white dark:border-sidebar-border">
                     <div class="relative overflow-x-auto sm:rounded-lg">
                         <ScrollArea class="h-50">
                             <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">

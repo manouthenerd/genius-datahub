@@ -6,9 +6,10 @@
             </Button>
         </PopoverTrigger>
         <PopoverContent>
-            <div class="grid">
+            <div class="grid space-y-2">
                 <p class="text-left text-xs text-zinc-400">Actions</p>
                 <Separator />
+                <slot/>
                 <Link
                     v-if="props.showEditLink"
                     :href="props.editLink"
@@ -19,6 +20,7 @@
                 </Link>
                 <Link
                     as="button"
+                    @success="alert.turnAlertOn"
                     v-if="props.showDeleteBtn"
                     method="delete"
                     :href="props.deleteLink"
@@ -28,7 +30,6 @@
                 >
                     Supprimer
                 </Link>
-                <slot/>
             </div>
         </PopoverContent>
     </Popover>
@@ -38,8 +39,10 @@
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Separator from '@/components/ui/separator/Separator.vue';
+import { useAlertStore } from '@/stores/alert';
 import { Link } from '@inertiajs/vue3';
 import { Ellipsis } from 'lucide-vue-next';
+
 
 const props = defineProps({
     editLink: String,
@@ -58,4 +61,8 @@ const props = defineProps({
     },
     serviceName: String,
 });
+
+const alert = useAlertStore()
+
+alert.message = "Opération effectuée avec succès !"
 </script>

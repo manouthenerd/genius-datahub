@@ -60,15 +60,25 @@ class ServiceController extends Controller
             'members.*' => ['integer', Rule::exists('users', 'id')],
         ]);
 
+
         // Update du service
         $service->update([
             'name' => $validated['name'],
-            'moderator_id' => $validated['moderator'],
         ]);
 
+        // Supprimer les utilisateurs retirés coté Front
         User::whereNotIn('id', $validated['members'])
             ->where('users.service_id', $service->id)
             ->delete();
+
+        // Définir le nouveau modérateur du service
+        User::where('id', (int) $validated['moderator'])
+            ->update(['role' => 'moderator']);
+
+        // Définir le role des autres User sur "membre"
+        User::where('id', '!=', (int) $validated['moderator'])
+            ->where('service_id', $service->id)
+            ->update(['role' => 'member']);
 
         // Associer chaque membre au service
         User::whereIn('id', $validated['members'])

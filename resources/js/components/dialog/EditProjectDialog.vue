@@ -11,8 +11,10 @@
                 <DialogDescription>Modifier les informations du projet
                 </DialogDescription>
             </DialogHeader>
-            <Form :action="route('projects.update', { project: project.id })" method="POST"
-                v-slot="{ errors, processing }" :reset-on-success="[]">
+            <Form 
+                @success="alert.turnAlertOn"
+                :action="route('projects.update', { project: project.id })" method="POST"
+                v-slot="{ errors, processing }">
                 <div class="grid gap-4 py-2">
                     <div class="grid gap-1">
                         <Label for="title">Libellé du projet </Label>
@@ -48,23 +50,23 @@
                     <div class="grid grid-cols-2 gap-2">
                         <div class="grid gap-1">
                             <Label for="starting_date">Date de début du projet</Label>
-                            <Input :model-value="project.starting_date" required
-                                class="ring-transparent!  focus:border-slate-500!" type="date" name="starting_date" />
-                            <InputError :message="errors.starting_date" />
+                            <Input name="from" :model-value="project.from" required
+                                class="ring-transparent!  focus:border-slate-500!" type="date"/>
+                            <InputError :message="errors.from" />
                         </div>
 
                         <div class="grid gap-1">
                             <Label for="ending_date">Date de fin du projet</Label>
-                            <Input :model-value="project.ending_date" required
-                                class="ring-transparent!  focus:border-slate-500!" type="date" name="ending_date" />
-                            <InputError :message="errors.ending_date" />
+                            <Input name="to" :model-value="project.to" required
+                                class="ring-transparent!  focus:border-slate-500!" type="date"/>
+                            <InputError :message="errors.to" />
                         </div>
                     </div>
 
                     <div class="grid gap-1">
                         <Label for="description">Description du projet</Label>
 
-                        <Textarea class="ring-transparent!  focus:border-slate-500!" :model-value="project.description"
+                        <Textarea name="description" class="ring-transparent!  focus:border-slate-500!" :model-value="project.description"
                             placeholder="Entrer la description ici." />
                         <InputError :message="errors.description" />
                     </div>
@@ -75,7 +77,7 @@
                     <Button :disabled="processing" type="submit"
                         class="bg-[#0168a6] hover:bg-[#0168a6] hover:opacity-80">
                         <Loader v-if="processing" class="h-4 w-4 animate-spin" />
-                        Sauvegarder
+                        Enregistrer
                     </Button>
                 </DialogFooter>
             </Form>
@@ -93,6 +95,8 @@ import Label from '@/components/ui/label/Label.vue';
 import SelectItem from '@/components/ui/select/SelectItem.vue';
 import { Button } from '@/components/ui/button';
 import Textarea from "@/components/ui/textarea/Textarea.vue";
+import { useAlertStore } from '@/stores/alert';
+import { Loader } from 'lucide-vue-next';
 
 
 interface Project {
@@ -101,9 +105,11 @@ interface Project {
     tag: string,
     priority: string,
     description: string,
-    starting_date: string,
-    ending_date: string
+    from: string,
+    to: string
 }
 
 defineProps<{ project: Project }>();
+
+const alert = useAlertStore();
 </script>

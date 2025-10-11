@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Service::class);
-            $table->string('name');
+            $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
+            $table->string('title');
             $table->text('description');
-            $table->enum('status', ['en cours', 'en attente','terminé'])->default('en attente');
+            $table->enum('status', ['in_progress', 'pending','completed'])->default('in_progress');
             $table->string('tag');
-            $table->enum('priority', ['urgent', 'important','secondaire'])->default('important');
+            $table->enum('priority', ['low', 'medium','high'])->default('medium');
             $table->date('from');
             $table->date('to');
             $table->timestamps();

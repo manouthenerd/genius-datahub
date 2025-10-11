@@ -1,37 +1,74 @@
 <template>
+
+    <div>
+        <AlertDialog v-model:open="open">
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>
+                        <div class="flex justify-between items-center">
+                            <p>Téléversement fichiers</p>
+                            <X class="text-neutral-500 transition-colors hover:text-black text-shadow"
+                                @click="closeUploadingModal" />
+                        </div>
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+
+
+                        <div>
+                            <ScrollArea class="h-56 p-4 border border-neutral-200 rounded mt-4">
+
+                                <FilePond name="file" ref="filepondFilesInput" class-name="my-pond"
+                                    allow-multiple="false" @init="handleFilePondInit"
+                                    @processfile="handleFilePondFilesProcess"
+                                    @removefile="handleFilePondFilesRemoveFile" />
+
+                                <input type="hidden" name="folder_id" id="folder_id" :value="folder_id">
+
+                            </ScrollArea>
+
+                        </div>
+
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+
+            </AlertDialogContent>
+        </AlertDialog>
+    </div>
+
     <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-        <thead class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
+        <thead
+            class="sticky-top sticky top-0 bg-blue-950 text-xs text-white uppercase dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">Nom</th>
                 <th scope="col" class="px-6 py-3">Taille</th>
                 <th scope="col" class="px-6 py-3">Modifié le</th>
                 <th>
-                    <Form>
-                        <Label for="picture">Picture</Label>
-                        <Input id="picture" type="file" hidden />
-                    </Form>
+                    <Label @click="openUploadingModal" class="rounded-full cursor-pointer p-2 bg-black">
+                        <img src="/image/upload.svg" alt="upload icon">
+                    </Label>
                 </th>
             </tr>
         </thead>
         <tbody v-if="files.length">
             <tr>
-                <th scope="row" class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                <th scope="row"
+                    class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                     <Link :href="route('resources.folders', [service.id])">
-                        <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <span class="text-slate-400 text-xs">/ {{ folder.name }}</span>
                     </Link>
                 </th>
             </tr>
 
-            <tr v-for="file in files" :key="file.id" class="border-y border-gray-200 transition-all dark:border-gray-700 dark:bg-gray-800">
+            <tr v-for="file in files" :key="file.id"
+                class="border-y border-gray-200 transition-all dark:border-gray-700 dark:bg-gray-800">
                 <ContextMenu>
                     <ContextMenuTrigger>
                         <TooltipProvider class="bg-white text-black">
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <th
-                                        scope="row"
-                                        class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white"
-                                    >
+                                    <th scope="row"
+                                        class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                                         <File :size="16" fill="#FFD700" /> <span>{{ file.name }}</span>
                                     </th>
                                 </TooltipTrigger>
@@ -40,7 +77,8 @@
                                         <p>Nom: {{ file.name }}</p>
                                         <p>Taille: {{ file.size }} Mo</p>
                                         <p>Type: Fichier Excel</p>
-                                        <p>Dernière modification: {{ new Date(file.updated_at).toLocaleString('GB') }}</p>
+                                        <p>Dernière modification: {{ new Date(file.updated_at).toLocaleString('GB') }}
+                                        </p>
                                     </div>
                                 </TooltipContent>
                             </Tooltip>
@@ -50,26 +88,14 @@
                         <ContextMenuSub>
                             <ContextMenuSubTrigger inset> Renommer </ContextMenuSubTrigger>
                             <ContextMenuSubContent v-if="showContext">
-                                <Form
-                                    @success="updateContextState"
-                                    class="grid gap-2"
-                                    method="PUT"
+                                <Form @success="updateContextState" class="grid gap-2" method="PUT"
                                     :action="route('files.update', { archive: Number(file.id) })"
-                                    v-slot="{ errors, processing }"
-                                >
-                                    <Input
-                                        type="text"
-                                        name="name"
-                                        :modelValue="file.name"
-                                        class="mt-1 mb-1 border-1! border-black! focus:ring-transparent!"
-                                    />
+                                    v-slot="{ errors, processing }">
+                                    <Input type="text" name="name" :modelValue="file.name"
+                                        class="mt-1 mb-1 border-1! border-black! focus:ring-transparent!" />
                                     <InputError :message="errors.name" />
-                                    <Button
-                                        type="submit"
-                                        variant="outline"
-                                        :disabled="processing"
-                                        class="bg-[#0168a6] text-white hover:bg-[#0168a6] hover:text-white hover:opacity-80"
-                                    >
+                                    <Button type="submit" variant="outline" :disabled="processing"
+                                        class="bg-[#0168a6] text-white hover:bg-[#0168a6] hover:text-white hover:opacity-80">
                                         <Loader2Icon v-if="processing" class="animate-spin" />
                                         Valider
                                     </Button>
@@ -77,11 +103,15 @@
                             </ContextMenuSubContent>
                         </ContextMenuSub>
                         <ContextMenuItem>
-                            <Button variant="link"> <Download /> Télécharger </Button>
+                            <Button variant="link">
+                                <Download /> Télécharger
+                            </Button>
                         </ContextMenuItem>
                         <ContextMenuItem>
-                            <Form method="DELETE" :action="route('files.destroy', { archive: Number(file.id) })">
-                                <Button style="color: red" class="hover:text-red-500" variant="link"> <Trash color="red" /> Supprimer </Button>
+                            <Form method="delete" :action="route('files.destroy', { archive: Number(file.id) })">
+                                <Button style="color: red" class="hover:text-red-500" variant="link">
+                                    <Trash color="red" /> Supprimer
+                                </Button>
                             </Form>
                         </ContextMenuItem>
                     </ContextMenuContent>
@@ -92,60 +122,41 @@
                 </td>
             </tr>
         </tbody>
-
         <tbody v-else class="w-full space-y-2">
             <tr>
-                <th scope="row" class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
+                <th scope="row"
+                    class="flex cursor-pointer items-center gap-1 px-6 py-2 font-medium whitespace-nowrap text-gray-900 dark:text-white">
                     <Link :href="route('resources.folders', service.id)">
-                        <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <Ellipsis class="stroke-gray-400 hover:stroke-gray-600" />
+                    <span class="text-slate-400 text-xs">/ {{ folder.name }}</span>
                     </Link>
                 </th>
             </tr>
             <tr>
                 <th colspan="5" class="text-center">
-                    <svg
-                        class="w-full"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="100"
-                        height="100"
-                        viewBox="0 0 647.63626 632.17383"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        role="img"
-                        artist="Katerina Limpitsouni"
-                        source="https://undraw.co/"
-                    >
+                    <svg class="w-full" xmlns="http://www.w3.org/2000/svg" width="100" height="100"
+                        viewBox="0 0 647.63626 632.17383" xmlns:xlink="http://www.w3.org/1999/xlink" role="img"
+                        artist="Katerina Limpitsouni" source="https://undraw.co/">
                         <path
                             d="M687.3279,276.08691H512.81813a15.01828,15.01828,0,0,0-15,15v387.85l-2,.61005-42.81006,13.11a8.00676,8.00676,0,0,1-9.98974-5.31L315.678,271.39691a8.00313,8.00313,0,0,1,5.31006-9.99l65.97022-20.2,191.25-58.54,65.96972-20.2a7.98927,7.98927,0,0,1,9.99024,5.3l32.5498,106.32Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#f2f2f2"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#f2f2f2" />
                         <path
                             d="M725.408,274.08691l-39.23-128.14a16.99368,16.99368,0,0,0-21.23-11.28l-92.75,28.39L380.95827,221.60693l-92.75,28.4a17.0152,17.0152,0,0,0-11.28028,21.23l134.08008,437.93a17.02661,17.02661,0,0,0,16.26026,12.03,16.78926,16.78926,0,0,0,4.96972-.75l63.58008-19.46,2-.62v-2.09l-2,.61-64.16992,19.65a15.01489,15.01489,0,0,1-18.73-9.95l-134.06983-437.94a14.97935,14.97935,0,0,1,9.94971-18.73l92.75-28.4,191.24024-58.54,92.75-28.4a15.15551,15.15551,0,0,1,4.40966-.66,15.01461,15.01461,0,0,1,14.32032,10.61l39.0498,127.56.62012,2h2.08008Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#3f3d56"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#3f3d56" />
                         <path
                             d="M398.86279,261.73389a9.0157,9.0157,0,0,1-8.61133-6.3667l-12.88037-42.07178a8.99884,8.99884,0,0,1,5.9712-11.24023l175.939-53.86377a9.00867,9.00867,0,0,1,11.24072,5.9707l12.88037,42.07227a9.01029,9.01029,0,0,1-5.9707,11.24072L401.49219,261.33887A8.976,8.976,0,0,1,398.86279,261.73389Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#ffd86b"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#ffd86b" />
                         <circle cx="190.15351" cy="24.95465" r="20" fill="#ffd86b" />
                         <circle cx="190.15351" cy="24.95465" r="12.66462" fill="#fff" />
                         <path
                             d="M878.81836,716.08691h-338a8.50981,8.50981,0,0,1-8.5-8.5v-405a8.50951,8.50951,0,0,1,8.5-8.5h338a8.50982,8.50982,0,0,1,8.5,8.5v405A8.51013,8.51013,0,0,1,878.81836,716.08691Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#e6e6e6"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#e6e6e6" />
                         <path
                             d="M723.31813,274.08691h-210.5a17.02411,17.02411,0,0,0-17,17v407.8l2-.61v-407.19a15.01828,15.01828,0,0,1,15-15H723.93825Zm183.5,0h-394a17.02411,17.02411,0,0,0-17,17v458a17.0241,17.0241,0,0,0,17,17h394a17.0241,17.0241,0,0,0,17-17v-458A17.02411,17.02411,0,0,0,906.81813,274.08691Zm15,475a15.01828,15.01828,0,0,1-15,15h-394a15.01828,15.01828,0,0,1-15-15v-458a15.01828,15.01828,0,0,1,15-15h394a15.01828,15.01828,0,0,1,15,15Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#3f3d56"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#3f3d56" />
                         <path
                             d="M801.81836,318.08691h-184a9.01015,9.01015,0,0,1-9-9v-44a9.01016,9.01016,0,0,1,9-9h184a9.01016,9.01016,0,0,1,9,9v44A9.01015,9.01015,0,0,1,801.81836,318.08691Z"
-                            transform="translate(-276.18187 -133.91309)"
-                            fill="#ffd86b"
-                        />
+                            transform="translate(-276.18187 -133.91309)" fill="#ffd86b" />
                         <circle cx="433.63626" cy="105.17383" r="20" fill="#ffd86b" />
                         <circle cx="433.63626" cy="105.17383" r="12.18187" fill="#fff" />
                     </svg>
@@ -153,16 +164,25 @@
             </tr>
             <tr>
                 <th colspan="5" class="text-center">
-                    <p class="mt-4 w-full p-2 text-center text-sm text-black underline">Aucun fichier trouvé.</p>
+                    <p class="grid place-content-center gap-1 mt-4 w-full p-2 text-center text-sm text-black">
+                        <span>Aucun fichier trouvé.</span>
+                        <Label @click="openUploadingModal"
+                            class="text-[#cf9c0d] p-1 rounded bg-black font-bold text-center underline cursor-pointer">
+                            Cliquez ici pour en ajouter
+                        </Label>
+                    </p>
+                    <!-- TODO: Real time loading -->
                 </th>
             </tr>
         </tbody>
+
     </table>
+
 </template>
 
 <script setup lang="ts">
-import { Form, Link } from '@inertiajs/vue3';
-import { Download, Ellipsis, File, Loader2Icon, Trash } from 'lucide-vue-next';
+import { useForm, Form, Link, usePage } from '@inertiajs/vue3';
+import { Download, Ellipsis, File, Loader2Icon, Trash, X } from 'lucide-vue-next';
 import { ref } from 'vue';
 import InputError from '../InputError.vue';
 import Button from '../ui/button/Button.vue';
@@ -175,9 +195,28 @@ import {
     ContextMenuSubTrigger,
     ContextMenuTrigger,
 } from '../ui/context-menu';
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "../ui/alert-dialog";
 import Input from '../ui/input/Input.vue';
 import Label from '../ui/label/Label.vue';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import ScrollArea from '../ui/scroll-area/ScrollArea.vue';
+
+import "filepond/dist/filepond.min.css";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+
+import vueFilePond, { setOptions } from 'vue-filepond';
+
+
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
+
+import { useAlertStore } from '@/stores/alert';
 
 interface Files {
     id: number;
@@ -191,9 +230,96 @@ interface Service {
     name: string;
 }
 
-defineProps<{ files: Files[]; service: Service }>();
+const alert = useAlertStore()
+
+const props = defineProps<{ files: Files[]; service: Service, folder: {id: number, name: string} }>();
+
+
+const FilePond = vueFilePond(
+    FilePondPluginFileValidateType,
+);
+
+const token = usePage().props.csrf_token
 
 const showContext = ref(true);
+const open = ref(false)
+
+const filepondFilesInput = ref(null);
+
+const form = useForm({
+
+    files: [],
+    folder_id: props.folder.id
+});
+
+// Set global options on filepond init
+const handleFilePondInit = () => {
+    setOptions({
+        chunkUploads: true,
+        credits: false,
+        instantUpload: false,
+        server: {
+            process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('folder_id', props.folder.id.toString());
+
+                const request = new XMLHttpRequest();
+                request.open('POST', route('files.store'));
+
+                // CSRF Token
+                request.setRequestHeader('X-CSRF-TOKEN', token);
+
+                // Suivi de la progression
+                request.upload.onprogress = (e) => {
+                    progress(e.lengthComputable, e.loaded, e.total);
+                };
+
+                request.onload = () => {
+                    if (request.status >= 200 && request.status < 300) {
+                        // Supprimer le fichier du FilePond après succès
+                        if (filepondFilesInput.value) {
+                            filepondFilesInput.value.removeFile(file);
+                        }
+                        load(request.responseText);
+
+                        alert.message = "Téléversement effectué avec succès !"
+                        alert.turnAlertOn()
+                    } else {
+                        error('Erreur lors de l’upload');
+                    }
+                };
+
+                request.onerror = () => {
+                    error('Erreur réseau');
+                };
+
+                request.send(formData);
+
+                // Fonction d’annulation
+                return {
+                    abort: () => {
+                        request.abort();
+                        abort();
+                    }
+                };
+            },
+            revert: null,
+            restore: null,
+            load: null,
+        },
+    });
+};
+
+const handleFilePondFilesProcess = (error, file) => {
+    form.files.push({ id: file.id, serverId: file.serverId });
+    handleFilePondFilesRemoveFile(error, file)
+};
+
+// Remove the server id on file remove
+const handleFilePondFilesRemoveFile = (error, file) => {
+    form.files = form.files.filter(item => item.id !== file.id);
+}
 
 const updateContextState = () => {
     showContext.value = false;
@@ -202,4 +328,12 @@ const updateContextState = () => {
         showContext.value = true;
     }, 2000);
 };
+
+const openUploadingModal = () => {
+    open.value = true;
+}
+
+const closeUploadingModal = () => {
+    open.value = false;
+}
 </script>

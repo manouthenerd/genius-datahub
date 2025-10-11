@@ -5,9 +5,10 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
-import { initializeTheme } from './composables/useAppearance';
-
+import { createPinia } from 'pinia'
 const appName = import.meta.env.VITE_APP_NAME || 'Genius DataHub';
+
+const pinia = createPinia()
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -16,12 +17,10 @@ createInertiaApp({
         createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
+            .use(pinia)
             .mount(el);
     },
     progress: {
         color: '#2563EB',
     },
 });
-
-// This will set light / dark mode on page load...
-initializeTheme();

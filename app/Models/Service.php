@@ -34,9 +34,8 @@ class Service extends Model
         return $this->hasMany(Folder::class);
     }
 
-    public function moderator()
-    {
-        return $this->belongsTo(User::class, 'moderator_id');
+    public function projects(): HasMany {
+        return $this->hasMany(Project::class);
     }
 
     public function scopeWithName($query)

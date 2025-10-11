@@ -5,8 +5,6 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
     --font-sans: Instrument Sans, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
@@ -122,7 +120,7 @@
     --smooth-shadow: rgb(156, 149, 149) 1px 1px 1px;
 }
 
-.dark {
+/* .dark {
     --background: hsl(0 0% 3.9%);
     --foreground: hsl(0 0% 98%);
     --card: hsl(0 0% 3.9%);
@@ -156,7 +154,7 @@
     --sidebar-border: hsl(0 0% 15.9%);
     --sidebar-ring: hsl(217.2 91.2% 59.8%);
     --sidebar: hsl(240 5.9% 10%);
-}
+} */
 
 @layer base {
     * {
@@ -167,7 +165,13 @@
     }
 }
 
-.table {
+.table-shadow {
     padding: 2px;
     box-shadow: var(--smooth-shadow);
+}
+
+#uploadBox {
+    border: 1.5px dashed #0074b8;
+    border-radius: 4px;
+     background-color: #0075b81a;
 }

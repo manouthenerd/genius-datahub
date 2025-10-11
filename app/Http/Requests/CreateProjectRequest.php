@@ -11,7 +11,9 @@ class CreateProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        $user = request()->user();
+        
+        return $user->role == 'admin' || $user->role == 'moderator' ;
     }
 
     /**
@@ -22,12 +24,33 @@ class CreateProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:50'],
-            'tag' => ['required', 'string', 'max:50'],
-            'description' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:255'],
+            'service_id' => ['required', 'integer', 'exists:services,id'],
+            'tag' => ['nullable', 'string', 'max:100'],
+            'priority' => ['required', 'in:low,medium,high'],
+            'from' => ['required', 'date'],
+            'to' => ['required', 'date', 'after_or_equal:from'],
+            'description' => ['nullable', 'string'],
+        ];
+    }
 
+    public function attributes()
+    {
+        return [
+            'title' => 'Libellé',
+            'priority' => 'Priorité',
+            'from' => 'date de début',
+            'to' => 'date de fin'
+
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'title.required' => 'Le libellé du projet est obligatoire.',
+            'priority.required' => 'Veuillez choisir un niveau de priorité.',
+            'to.after_or_equal' => 'La date de fin doit être postérieure ou égale à la date de début.',
         ];
     }
 }

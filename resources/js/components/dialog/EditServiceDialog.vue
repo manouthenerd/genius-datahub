@@ -21,7 +21,9 @@
             </div>
 
             <!-- Formulaire -->
-            <Form :action="route('services.update', { service: service.id })" method="PUT"
+            <Form 
+                @success="alert.turnAlertOn"
+                :action="route('services.update', { service: service.id })" method="PUT"
                 v-slot="{ errors, processing }">
                 <div class="grid gap-4 py-2">
 
@@ -112,8 +114,11 @@ import { Button } from '@/components/ui/button';
 import Separator from '@/components/ui/separator/Separator.vue';
 import { ShieldCheck, Trash, Loader } from 'lucide-vue-next';
 import { ref, computed } from 'vue';
+import { useAlertStore } from '@/stores/alert';
 
 const props = defineProps<{ service: Service, services: Service[] }>();
+
+const alert = useAlertStore()
 
 interface Service {
     id: number,
