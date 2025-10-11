@@ -30,18 +30,18 @@ class AdminResourcesController extends Controller
     public function files(int $service, int $folder)
     {
 
+        // Récupérer le service
         $service = Service::where('id', $service)->firstOr(function(){
             return abort(404);
         });
 
-        // Récupérer le service
         $folders = Folder::where('id', $folder)->firstOr(function() {
             return abort(404);
         });
 
         $files = $folders->archives()->get(['id', 'name', 'size', 'updated_at']);
 
-        return Inertia::render('admin/ServiceFiles', ['files' => $files, 'service' => $service, 'folder_id' => $folder]);
+        return Inertia::render('admin/ServiceFiles', ['files' => $files, 'service' => $service, 'folder' => Folder::where('id', $folder)->first(['id', 'name']) ]);
     }
 
 
