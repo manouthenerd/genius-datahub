@@ -9,7 +9,6 @@ use Inertia\Inertia;
 use App\Models\Service;
 use App\Models\Task;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class TaskController extends Controller
 {
@@ -53,16 +52,20 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
+        
         $validated = $request->validated();
 
         $task->update($validated);
 
+        $task->users()->detach();
+        $task->users()->attach($validated['users'], ['created_at' => now(), 'updated_at' => now()]);
+
         return redirect()->back();
     }
 
-    public function edit(CreateTaskRequest $request, Task $task)
-    {   
-
+    public function edit(Request $request, Task $task)
+    {  
+        
         $user = $request->user();
 
         $project = Project::with('service')->find($task->project_id);
@@ -71,14 +74,17 @@ class TaskController extends Controller
 
         $service_users = $service->users()->get();
 
+        $task_users = $task->users()->get(['users.id', 'users.name']);
+
         if (!($user->role === 'admin' || ($user->role === 'moderator' && $service->id === $user->service_id))) {
             return abort(403);
         }
 
         return Inertia::render('EditTask', [
-            'project' => $project,
-            'task' => $task,
-            'users' => $service_users
+            'project'       => $project,
+            'task'          => $task,
+            'users'         => $service_users,
+            'selectedUsers' => $task_users
         ]);
     }
 
