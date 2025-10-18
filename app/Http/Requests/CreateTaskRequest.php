@@ -29,8 +29,8 @@ class CreateTaskRequest extends FormRequest
             'tag'         => 'nullable|string|max:100',
             'project_id'  => 'required|exists:projects,id',
             'service_id'  => 'required|exists:services,id',
-            'users' => 'required|array|min:1',
-            'users.*' => 'integer|exists:users,id',
+            'users'       => 'required|array|min:1',
+            'users.*'     => 'integer|exists:users,id',
             'priority'    => 'required|in:low,medium,high',
             'from'        => 'required|date',
             'to'          => 'required|date|after_or_equal:from',
@@ -40,10 +40,10 @@ class CreateTaskRequest extends FormRequest
     public function attributes()
     {
         return [
-            'title' => 'libellé',
-            'from' => 'champ date de début',
-            'to' => 'date de fin',
-            'priority' => 'priorité'
+            'title'     => 'libellé',
+            'from'      => 'champ date de début',
+            'to'        => 'date de fin',
+            'priority'  => 'priorité'
         ];
     }
 }
