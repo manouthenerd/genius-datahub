@@ -3,14 +3,16 @@
         <div class="w-full flex items-center justify-between px-4 mt-4 mb-4">
             <p class="text-sm">
                 <Link :href="route('tasks')" class="flex items-center transition-colors hover:text-[#0074B8]">
-                    <ArrowLeftIcon/>
-                    Retour
+                <ArrowLeftIcon />
+                Retour
                 </Link>
             </p>
             <p>
-                <Link @success="alert.turnAlertOn" as="button" :href="route('tasks.destroy', {task: task.id})" method="post" class="flex items-center text-sm text-[#fc3d3c] group hover:text-[#fc3d3c] bg-transparent hover:bg-transparent cursor-pointer">
-                    <Trash :size="16" color="red" class="group-hover:scale-110 group-hover:rotate-6 transition-colors"/>
-                    supprimer
+                <Link @success="alert.turnAlertOn" as="button" :href="route('tasks.destroy', { task: task.id })"
+                    method="delete"
+                    class="flex items-center text-sm text-[#fc3d3c] group hover:text-[#fc3d3c] bg-transparent hover:bg-transparent cursor-pointer">
+                <Trash :size="16" color="red" class="group-hover:scale-110 group-hover:rotate-6 transition-colors" />
+                supprimer
                 </Link>
             </p>
         </div>
@@ -81,15 +83,16 @@
                                         <li v-for="user in users" :key="user.id">
                                             <label :for="`user-${user.id}`">
                                                 {{ user.name }}
-                                                <input type="checkbox" :value="user.id" :id="`user-${user.id}`"
-                                                    v-model="selectedUsers">
+                                                <input type="checkbox" name="users[]" :value="user.id"
+                                                    :id="`user-${user.id}`" v-model="updateSelectedUsers">
                                             </label>
                                         </li>
                                     </ul>
                                 </div>
+
                             </ScrollArea>
 
-                            <InputError :message="errors.project_id" />
+                            <InputError :message="errors.users" />
                         </div>
 
                         <div class="grid gap-2">
@@ -189,9 +192,10 @@ interface User {
     email?: string
 }
 
-const props = defineProps<{ project: Project, service_id: number, users: User[], task: Task }>();
+const props = defineProps<{ project: Project, users: User[], selectedUsers: User[], task: Task }>();
 
 const selectedProject = ref(props.project.id);
 
-const selectedUsers = ref([]);
+const updateSelectedUsers = ref(props.selectedUsers.map(user => user.id));
+
 </script>
