@@ -27,6 +27,8 @@ class UpdateTaskRequest extends FormRequest
             'title'       => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
             'tag'         => 'nullable|string|max:100',
+            'users'       => 'required|array|min:1',
+            'users.*'     => 'integer|exists:users,id',
             'project_id'  => 'sometimes|required|exists:projects,id',
             'priority'    => 'sometimes|required|in:low,medium,high',
             'from'        => 'sometimes|required|date',
@@ -40,7 +42,8 @@ class UpdateTaskRequest extends FormRequest
             'title' => 'libellé',
             'from' => 'champ date de début',
             'to' => 'date de fin',
-            'priority' => 'priorité'
+            'priority' => 'priorité',
+            'users' => 'membres'
         ];
     }
 }

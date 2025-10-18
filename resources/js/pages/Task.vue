@@ -123,10 +123,6 @@ function tasksInPending() {
     })
 }
 
-onMounted(() => {
-    console.log(tasksInProgress(), tasksInPending(), tasksCompleted())
-
-})
 </script>
 
 <template>
