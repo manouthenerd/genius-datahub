@@ -43,7 +43,8 @@ class CreateTaskRequest extends FormRequest
             'title'     => 'libellé',
             'from'      => 'champ date de début',
             'to'        => 'date de fin',
-            'priority'  => 'priorité'
+            'priority'  => 'priorité',
+            'users'     => 'membres',
         ];
     }
 }
