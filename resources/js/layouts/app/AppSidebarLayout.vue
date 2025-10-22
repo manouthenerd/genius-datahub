@@ -30,12 +30,37 @@ withDefaults(defineProps<Props>(), {
                         </Button>
                     </SheetTrigger>
                     <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle> Notifications </SheetTitle>
-                            <SheetDescription> Toutes vos notifications seront listées ici. </SheetDescription>
+                        <SheetHeader class="mt-6">
+                            <div class="bg-neutral-200 p-2 rounded-sm flex justify-between items-center">
+                                <span class="font-bold">Notifications</span>
+                                <!-- <span>
+                                    <img src="/image/double-check.svg" alt="mark as read icon">
+                                </span> -->
+                                <span class="font-thin underline cursor-pointer text-xs">Marquer tout comme lu</span>
+                            </div>
                         </SheetHeader>
-                        <div>
-                            <p>Hello World</p>
+                        <div class="p-2 mx-4 border border-slate-300 rounded h-full space-y-2 divide-y-2 overflow-y-scroll">
+                            <div v-for="i in 8" :key="i" class="rounded p-3 hover:cursor-pointer transition-all hover:bg-[aliceblue]">
+                                <div>
+                                    <div>
+                                        <div class="flex items-center gap-1">
+                                            <span class="h-[8px] bg-blue-900 block w-[8px] rounded-full"></span>
+                                            <p class="flex gap-1 items-center">
+                                                <span
+                                                    class="h-[18px] w-[18px] block bg-gradient-to-bl from-blue-300 to-green-400 via-orange-400 rounded-full"></span>
+                                                <span class="font-bold">Nouvelle tâche ajoutée</span>
+
+                                            </p>
+                                        </div>
+                                        <p class="text-xs font-thin">
+                                            12/05/2025 13:40
+                                        </p>
+                                    </div>
+                                    <div class="my-2 text-sm">
+                                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </SheetContent>
                 </Sheet>
