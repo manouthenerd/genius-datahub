@@ -42,8 +42,22 @@ class TaskController extends Controller
     {
 
         $validated = $request->validated();
+
+        $current_date = now()->format('Y-m-d');
         
         $task = Task::create($validated);
+
+        if($task->from > $current_date) {
+            $task->status = 'pending';
+
+            $task->save();
+        }
+
+        if($current_date == $task->from) {
+            $task->status = 'in_progress';
+
+            $task->save();
+        }
 
         $task->users()->attach($validated['users'], ['created_at' => now(), 'updated_at' => now()]);
 
@@ -56,6 +70,20 @@ class TaskController extends Controller
         $validated = $request->validated();
 
         $task->update($validated);
+
+        $current_date = now()->format('Y-m-d');
+        
+        if($task->from > $current_date) {
+            $task->status = 'pending';
+
+            $task->save();
+        }
+
+        if($current_date == $task->from) {
+            $task->status = 'in_progress';
+
+            $task->save();
+        }
 
         $task->users()->detach();
         $task->users()->attach($validated['users'], ['created_at' => now(), 'updated_at' => now()]);

@@ -165,8 +165,8 @@ function tasksInPending() {
                                             <Badge> {{ project.tag }} </Badge>
                                         </td>
                                         <td class="px-2 py-2">
-                                            <Badge class="bg-green-50 text-black" variant="secondary">
-                                                <span class="size-[5px] rounded-full bg-green-500"></span> {{
+                                            <Badge class="bg-[#e6fcdc] text-black" variant="secondary">
+                                                <span class="size-[5px] rounded-full bg-[#c7f17b]"></span> {{
                                                     statusToFrench(project.status) }}
                                             </Badge>
                                         </td>
@@ -286,9 +286,9 @@ function tasksInPending() {
                     </div>
 
                     <!-- Completed Tasks -->
-                    <ScrollArea v-if="tasksCompleted()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-green-100 p-2">
+                    <ScrollArea v-if="tasksCompleted()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-[#e6fcdc] p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
-                            <p class="rounded bg-green-300 p-1">Terminées</p>
+                            <p class="rounded bg-[#c7f17b] p-1">Terminées</p>
                             <Button variant="ghost">
                                 {{ tasksCompleted()?.length ?? 0 }}
                                 <Bookmark />

@@ -63,7 +63,7 @@
                                 
                             </div>
                             
-                            <InputError :message="errors.project_id" />
+                            <InputError :message="errors.users" />
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
