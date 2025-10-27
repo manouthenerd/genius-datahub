@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminResourcesController;
 
 Route::get('services/{service}', [AdminResourcesController::class, 'folders'])->name('resources.folders');
@@ -15,3 +16,9 @@ Route::delete('archives/{archive}', [ArchiveController::class, 'destroy'])->name
 Route::post('folders', [FolderController::class, 'store'])->name('folders.store');
 Route::put('folders/{folder}', [FolderController::class, 'update'])->name('folders.update');
 Route::delete('folders/{folder}', [FolderController::class, 'destroy'])->name('folders.destroy');
+
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/delete', [NotificationController::class, 'markAsDeleted'])->name('notifications.markAsDeleted');
+});

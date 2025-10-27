@@ -1,21 +1,18 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProjectController;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ResourceController;
-use App\Models\Service;
-use App\Models\Task;
-use Illuminate\Http\Request;
-
-Route::put('/test', function(Request $request) {
-    return dd($request->all());
-});
 
 Route::middleware(["auth"])->group(function () {
+
+    Route::get('dashboard', DashboardController::class)
+        ->middleware(["auth", "verified"])->name('dashboard');
+
 
     Route::get('/', function () {})->name('home');
     Route::redirect('/', '/dashboard');
@@ -47,11 +44,6 @@ Route::middleware(["auth"])->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 
-Route::get('dashboard', function () {
-    $services = Service::all(['id', 'name', 'updated_at']);
-
-    return Inertia::render('Dashboard', ['services' => $services]);
-})->middleware(["auth", "verified"])->name('dashboard');
 
 
 require __DIR__ . '/settings.php';
