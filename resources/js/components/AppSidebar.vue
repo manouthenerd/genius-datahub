@@ -3,10 +3,25 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BriefcaseBusiness, Building, LayoutGrid } from 'lucide-vue-next';
 
-const mainNavItems: NavItem[] = [
+const user = usePage().props.auth.user;
+
+const mainNavItems: NavItem[] = user.role == "member" ? [
+
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Tâches et projets ',
+        href: '/tasks',
+        icon: BriefcaseBusiness,
+    },
+
+] : [
     {
         title: 'Dashboard',
         href: '/dashboard',
@@ -22,7 +37,6 @@ const mainNavItems: NavItem[] = [
         href: '/tasks',
         icon: BriefcaseBusiness,
     },
-
 ];
 </script>
 
@@ -33,9 +47,9 @@ const mainNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <div>
-                                <img class="w-[150px]" src="image/logo-genius.png" alt="Logo de l'entreprise" />
-                            </div>
+                        <div>
+                            <img class="w-[150px]" src="/image/logo-genius.png" alt="Logo de l'entreprise" />
+                        </div>
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
