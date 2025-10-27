@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Notification;
 use App\Models\Project;
 use Inertia\Inertia;
 use App\Models\Service;
 use App\Models\Task;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -32,7 +35,8 @@ class TaskController extends Controller
         ]);
     }
 
-    public function getUsers(Service $service) {
+    public function getUsers(Service $service)
+    {
         $users = $service->users()->get(['id', 'name']) ?? [];
 
         return $users->toJson();
@@ -41,45 +45,67 @@ class TaskController extends Controller
     public function store(CreateTaskRequest $request)
     {
 
+        $user = $request->user();
+
         $validated = $request->validated();
 
         $current_date = now()->format('Y-m-d');
-        
+
         $task = Task::create($validated);
 
-        if($task->from > $current_date) {
+        if ($task->from > $current_date) {
             $task->status = 'pending';
 
             $task->save();
         }
 
-        if($current_date == $task->from) {
+        if ($current_date == $task->from) {
             $task->status = 'in_progress';
 
             $task->save();
         }
 
+        // Associer la tâche aux différents users sélectionnés
         $task->users()->attach($validated['users'], ['created_at' => now(), 'updated_at' => now()]);
+
+        extract(NotificationService::fetchUsersToNotify($task->service_id, $user));
+
+        $message = NotificationService::setNotificationMessage(
+            $user, 
+            $service_name,
+            "Une nouvelle tâche a été créée par l'admin pour l'équipe du service",
+            "vient d'ajouter une nouvelle tâche pour son équipe."
+
+        );
+        
+        // Création de la notification
+        $notification = Notification::create([
+            'title' => 'Nouvelle tâche',
+            'content' => $message,
+            'service_id' => $task->service_id
+        ]);
+
+        $notification->users()->attach($service_users);
 
         return redirect()->back();
     }
 
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        
+
         $validated = $request->validated();
 
         $task->update($validated);
 
         $current_date = now()->format('Y-m-d');
-        
-        if($task->from > $current_date) {
+
+        if ($task->from > $current_date) {
             $task->status = 'pending';
 
             $task->save();
         }
 
-        if($current_date == $task->from) {
+        if ($current_date == $task->from) {
             $task->status = 'in_progress';
 
             $task->save();
@@ -92,8 +118,8 @@ class TaskController extends Controller
     }
 
     public function edit(Request $request, Task $task)
-    {  
-        
+    {
+
         $user = $request->user();
 
         $project = Project::with('service')->find($task->project_id);

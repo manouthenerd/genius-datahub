@@ -2,7 +2,7 @@
     <Link :href>
     <Card class="taskCard my-2 px-1">
         <CardHeader>
-            <div class="flex justify-between items-center text-xs mb-4">
+            <div class="flex justify-between flex-wrap items-center text-xs mb-4">
                 <p>
                     {{ priority }}
                 </p>
