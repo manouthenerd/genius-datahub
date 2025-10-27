@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,6 +35,11 @@ class Service extends Model
 
     public function projects(): HasMany {
         return $this->hasMany(Project::class);
+    }
+
+    public function notifications(): HasMany 
+    {
+        return $this->hasMany(Notification::class);
     }
 
     public function scopeWithName($query)
