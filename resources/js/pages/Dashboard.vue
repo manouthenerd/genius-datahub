@@ -12,7 +12,7 @@ interface Service {
     updated_at: string;
 }
 
-defineProps<{ services: Service[] }>();
+const props = defineProps<{ services: Service[], service: Service }>();
 
 const page = usePage();
 const user = page.props.auth?.user;
@@ -20,6 +20,8 @@ const user = page.props.auth?.user;
 const getUser = computed(() => {
     return user?.role;
 });
+
+console.log(props.services)
 </script>
 
 <template>
@@ -40,9 +42,21 @@ const getUser = computed(() => {
             </tr>
         </tbody>
     </table>
+    <table v-else class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+        <tbody>
+            <tr class="flex flex-wrap gap-2 p-2">
+                <Link
+                    :key="service.id"
+                    :href="route('resources.folders', [service.id])"
+                    class="grid justify-items-center"
+                >
+                    <Folder />
+                    <p class="w-[130px] overflow-hidden text-center text-xs text-nowrap text-ellipsis">
+                        {{ service.name }}
+                    </p>
+                </Link>
+            </tr>
+        </tbody>
+    </table>
 
-    <!-- TODO Injecter les données dans le tableau -->
-    <!-- <ExplorerTable v-if="getUser == 'member' || getUser == 'moderator'">
-
-    </ExplorerTable> -->
 </template>
