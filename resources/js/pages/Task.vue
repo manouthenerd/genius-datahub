@@ -6,11 +6,11 @@ import TaskCard from '@/components/ui/card/TaskCard.vue';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Bookmark } from 'lucide-vue-next';
 import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
 import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
-import { onMounted } from 'vue';
+import { computed } from "vue"
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,6 +18,10 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/tasks',
     },
 ];
+
+const user = usePage().props.auth.user;
+
+const hasNotMemberRole = computed(() => user.role !== 'member');
 
 
 interface Project {
@@ -134,7 +138,7 @@ function tasksInPending() {
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Projets en cours</p>
-                    <p>
+                    <p v-if="hasNotMemberRole">
                         <CreateProjectDialog :services :service_id />
                     </p>
                 </div>
@@ -184,7 +188,7 @@ function tasksInPending() {
                                         </td>
                                         <td class="px-2 py-2">{{ frDateFormat(project.from) }}</td>
                                         <td class="px-2 py-2">{{ frDateFormat(project.to) }}</td>
-                                        <td class="px-2 py-2 text-right">
+                                        <td v-if="hasNotMemberRole" class="px-2 py-2 text-right">
                                             <ActionOption :show-edit-link="false"
                                                 :delete-link="route('projects.destroy', project.id)">
                                                 <EditProjectDialog :project />
@@ -214,7 +218,7 @@ function tasksInPending() {
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <p class="text-xs text-gray-400">Aperçu des tâches</p>
-                    <Link :href="route('tasks.create')">
+                    <Link v-if="hasNotMemberRole" :href="route('tasks.create')">
                     Nouvelle tâche
                     </Link>
                 </div>
@@ -231,7 +235,7 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard v-for="task in tasksInPending()" :href="route('tasks.edit', { task: task.id })"
+                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksInPending()" :href="route('tasks.edit', { task: task.id })"
                             :key="task.id" :priority="task.title" :tag="task.tag" :title="task.title"
                             :description="task.description" image="/image/genius-3D.png" :progression="40" />
 
@@ -254,7 +258,8 @@ function tasksInPending() {
                     </div>
 
                     <!-- In progress Tasks -->
-                    <ScrollArea v-if="tasksInProgress()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-blue-100 p-2">
+                    <ScrollArea v-if="tasksInProgress()?.length"
+                        class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-blue-100 p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
                             <p class="rounded bg-blue-300 p-1">En cours</p>
                             <Button variant="ghost">
@@ -262,7 +267,7 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard class=" hover:cursor-[url('/image/cursor.svg')]" v-for="task in tasksInProgress()"
+                        <TaskCard :role="hasNotMemberRole" class=" hover:cursor-[url('/image/cursor.svg')]" v-for="task in tasksInProgress()"
                             :href="route('tasks.edit', { task: task.id })" :key="task.id" :priority="task.title"
                             :tag="task.tag" :title="task.title" :description="task.description"
                             image="/image/genius-3D.png" :progression="40" />
@@ -286,7 +291,8 @@ function tasksInPending() {
                     </div>
 
                     <!-- Completed Tasks -->
-                    <ScrollArea v-if="tasksCompleted()?.length" class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-[#e6fcdc] p-2">
+                    <ScrollArea v-if="tasksCompleted()?.length"
+                        class="grid max-h-[340px] gap-2 overflow-x-scroll rounded-sm bg-[#e6fcdc] p-2">
                         <div class="my-2 flex items-center justify-between px-0.5">
                             <p class="rounded bg-[#c7f17b] p-1">Terminées</p>
                             <Button variant="ghost">
@@ -294,7 +300,7 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard v-for="task in tasksCompleted()" :key="task.id" :priority="task.title" :tag="task.tag"
+                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksCompleted()" :key="task.id" :priority="task.title" :tag="task.tag"
                             :title="task.title" :description="task.description" image="/image/genius-3D.png"
                             :href="route('tasks.edit', { task: task.id })" :progression="40" />
 
