@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Archive;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ArchiveController extends Controller
@@ -42,6 +43,8 @@ class ArchiveController extends Controller
      */
     public function update(Request $request, Archive $archive)
     {
+        Gate::authorize('update', $archive);
+
         $request->validate([
             'name' => 'required|string|max:255',
             'folder_id' => 'nullable|exists:folders,id',
@@ -62,6 +65,9 @@ class ArchiveController extends Controller
      */
     public function destroy(Archive $archive)
     {
+
+        Gate::authorize('destroy', $archive);
+
         // Supprimer le fichier du storage
         if (Storage::disk('public')->exists($archive->path)) {
             Storage::disk('public')->delete($archive->path);
