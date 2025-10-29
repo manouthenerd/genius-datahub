@@ -17,7 +17,6 @@ Route::post('folders', [FolderController::class, 'store'])->name('folders.store'
 Route::put('folders/{folder}', [FolderController::class, 'update'])->name('folders.update');
 Route::delete('folders/{folder}', [FolderController::class, 'destroy'])->name('folders.destroy');
 
-// routes/web.php
 Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/mark-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
     Route::post('/notifications/delete', [NotificationController::class, 'markAsDeleted'])->name('notifications.markAsDeleted');
