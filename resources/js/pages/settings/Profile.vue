@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Form, Head, Link, usePage } from '@inertiajs/vue3';
 
-import DeleteUser from '@/components/DeleteUser.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
@@ -42,7 +41,7 @@ alert.message = "Modification effectuée avec succès";
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Information du profil" description="Mettre à jour votre nom d'utilisateur" />
 
-                <Form method="patch" @success="alert.turnAlertOn" :action="route('profile.update')" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form method="patch" @success="alert.turnAlertOn" :action="route('profile.update')" class="space-y-6" v-slot="{ errors, processing }">
                     <div class="grid gap-2">
                         <Label for="name">Nom et prénoms</Label>
                         <Input
