@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderStatusEvent;
+use App\Models\Task;
+use Inertia\Inertia;
+use App\Models\Project;
+use App\Models\Service;
+use App\Events\TaskCreated;
+use App\Events\TaskCreatedEvent;
+use App\Models\Notification;
+use Illuminate\Http\Request;
+use App\Services\NotificationService;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
-use App\Models\Notification;
-use App\Models\Project;
-use Inertia\Inertia;
-use App\Models\Service;
-use App\Models\Task;
-use App\Models\User;
-use App\Services\NotificationService;
-use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -84,6 +86,8 @@ class TaskController extends Controller
             'content' => $message,
             'service_id' => $task->service_id
         ]);
+
+        broadcast(new TaskCreatedEvent($task))->toOthers();
 
         $notification->users()->attach($service_users);
 
