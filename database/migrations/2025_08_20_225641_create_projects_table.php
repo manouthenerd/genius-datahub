@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Service::class)->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->enum('status', ['in_progress', 'pending','completed'])->default('in_progress');
             $table->string('tag');
             $table->enum('priority', ['low', 'medium','high'])->default('medium');
