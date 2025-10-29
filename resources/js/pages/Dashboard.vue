@@ -12,7 +12,7 @@ interface Service {
     updated_at: string;
 }
 
-const props = defineProps<{ services: Service[], service: Service }>();
+defineProps<{ services: Service[], service: Service }>();
 
 const page = usePage();
 const user = page.props.auth?.user;
@@ -21,7 +21,6 @@ const getUser = computed(() => {
     return user?.role;
 });
 
-console.log(props.services)
 </script>
 
 <template>
