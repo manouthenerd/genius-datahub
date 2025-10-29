@@ -16,28 +16,38 @@ class NotificationService
      * @param User $user
      * @return array
      */
-    public static function fetchUsersToNotify(
-        int $serviceId, 
-        User $user
-    )
+    public static function fetchUsersToNotify(int $serviceId, User $user)
     {
-
         $service = Service::find($serviceId, ['id', 'name']);
+
+        if (!$service) {
+            return ['service_name' => null, 'service_users' => collect()];
+        }
 
         $service_name = $service->name;
 
-        // Récuperer les users du Service associé à la Tâche créée
-        $service_users = $service->users()->pluck('id');
+        // Récupérer les utilisateurs du service associé
+        $service_users = $service->users()->pluck('id')->toArray();
 
-        // Retirer l'initiateur de la requête de ceux qui recevront la notification
-        if ($user->role == "moderator") {
-            $service_users = $service->users()->whereNot('id', '=', $user()->id)->pluck('id');
+        // Si l'utilisateur est modérateur, on retire son ID et ajoute l'admin
+        if ($user->role === 'moderator') {
+            // Retirer le modérateur lui-même
+            $service_users = array_diff($service_users, [$user->id]);
 
-            $service_users[] = User::where('role', '=', 'admin')->first()->id;
+            // Ajouter l'admin (si trouvé)
+            $admin = User::where('role', 'admin')->first();
+
+            if ($admin) {
+                $service_users[] = $admin->id;
+            }
         }
 
-        return ['service_name' => $service_name, 'service_users' => $service_users];
+        return [
+            'service_name' => $service_name,
+            'service_users' => array_values($service_users), // réindexation propre
+        ];
     }
+
 
     /**
      * Permet de définir le message qui sera associé
@@ -51,12 +61,11 @@ class NotificationService
      * @return string
      */
     public static function setNotificationMessage(
-        User $user, 
-        string $service_name, 
+        User $user,
+        string $service_name,
         string $admin_message,
         string $moderator_message
-    )
-    {
+    ) {
 
         $message = $user->role == 'admin' ? "$admin_message <i>$service_name</i>."
             : "Le modérateur du service <i>$service_name</i> $moderator_message.";
