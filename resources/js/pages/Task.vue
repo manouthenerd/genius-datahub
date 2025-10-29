@@ -11,6 +11,7 @@ import { Bookmark } from 'lucide-vue-next';
 import CreateProjectDialog from '@/components/dialog/CreateProjectDialog.vue';
 import EditProjectDialog from '@/components/dialog/EditProjectDialog.vue';
 import { computed } from "vue"
+import { useEcho } from '@laravel/echo-vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -235,9 +236,10 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksInPending()" :href="route('tasks.edit', { task: task.id })"
-                            :key="task.id" :priority="task.title" :tag="task.tag" :title="task.title"
-                            :description="task.description" image="/image/genius-3D.png" :progression="40" />
+                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksInPending()"
+                            :href="route('tasks.edit', { task: task.id })" :key="task.id" :priority="task.title"
+                            :tag="task.tag" :title="task.title" :description="task.description"
+                            image="/image/genius-3D.png" :progression="40" />
 
                     </ScrollArea>
 
@@ -267,10 +269,10 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard :role="hasNotMemberRole" class=" hover:cursor-[url('/image/cursor.svg')]" v-for="task in tasksInProgress()"
-                            :href="route('tasks.edit', { task: task.id })" :key="task.id" :priority="task.title"
-                            :tag="task.tag" :title="task.title" :description="task.description"
-                            image="/image/genius-3D.png" :progression="40" />
+                        <TaskCard :role="hasNotMemberRole" class=" hover:cursor-[url('/image/cursor.svg')]"
+                            v-for="task in tasksInProgress()" :href="route('tasks.edit', { task: task.id })"
+                            :key="task.id" :priority="task.title" :tag="task.tag" :title="task.title"
+                            :description="task.description" image="/image/genius-3D.png" :progression="40" />
 
                     </ScrollArea>
 
@@ -300,9 +302,10 @@ function tasksInPending() {
                                 <Bookmark />
                             </Button>
                         </div>
-                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksCompleted()" :key="task.id" :priority="task.title" :tag="task.tag"
-                            :title="task.title" :description="task.description" image="/image/genius-3D.png"
-                            :href="route('tasks.edit', { task: task.id })" :progression="40" />
+                        <TaskCard :role="hasNotMemberRole" v-for="task in tasksCompleted()" :key="task.id"
+                            :priority="task.title" :tag="task.tag" :title="task.title" :description="task.description"
+                            image="/image/genius-3D.png" :href="route('tasks.edit', { task: task.id })"
+                            :progression="40" />
 
                     </ScrollArea>
 
