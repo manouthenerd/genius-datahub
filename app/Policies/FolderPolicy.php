@@ -8,10 +8,17 @@ use Illuminate\Auth\Access\Response;
 
 class FolderPolicy
 {
+    
     public function update(User $user, Folder $folder) {
         return $user->id === $folder->user_id
             ? Response::allow() 
-            : Response::deny("Vous n'êtes pas authorisé à effectuer cette action.");
+            : abort(403);
+    }
+
+    public function destroy(User $user, Folder $folder) {
+        return $user->id === $folder->user_id
+            ? Response::allow() 
+            : abort(403);
     }
 
 }

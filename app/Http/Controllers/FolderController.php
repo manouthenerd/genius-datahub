@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UpdateFolderRequest;
 use App\Models\Folder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 // #[UsePolicy(FolderPolicy::class)]
 class FolderController extends Controller
@@ -32,6 +33,8 @@ class FolderController extends Controller
     public function update(UpdateFolderRequest $request, Folder $folder)
     {
 
+        Gate::authorize('update', $folder);
+
         $request->user()->can('update', $folder);
 
         $folder->name = $request->input('name');
@@ -42,10 +45,9 @@ class FolderController extends Controller
 
     }
 
-    public function destroy(Folder $folder, Request $request) {
-        if(! $folder->user_id == $request->user()->id) {
-            return abort('403');
-        }
+    public function destroy(Folder $folder) {
+
+        Gate::authorize('destroy', $folder);
 
         $folder->delete();
 
