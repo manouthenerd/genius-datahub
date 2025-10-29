@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type User } from '@/types';
+import { useAlertStore } from '@/stores/alert';
 
 interface Props {
     mustVerifyEmail: boolean;
@@ -20,46 +21,51 @@ defineProps<Props>();
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
-        title: 'Profile settings',
+        title: 'Paramètre du profil',
         href: '/settings/profile',
     },
 ];
 
 const page = usePage();
 const user = page.props.auth.user as User;
+
+const alert = useAlertStore()
+
+alert.message = "Modification effectuée avec succès";
 </script>
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbItems">
-        <Head title="Profile settings" />
+        <Head title="Paramètre du profil" />
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Profile information" description="Update your name and email address" />
+                <HeadingSmall title="Information du profil" description="Mettre à jour votre nom d'utilisateur" />
 
-                <Form method="patch" :action="route('profile.update')" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
+                <Form method="patch" @success="alert.turnAlertOn" :action="route('profile.update')" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
                     <div class="grid gap-2">
-                        <Label for="name">Name</Label>
+                        <Label for="name">Nom et prénoms</Label>
                         <Input
                             id="name"
-                            class="mt-1 block w-full"
+                            class="mt-1 block w-full bg-white"
                             name="name"
                             :default-value="user.name"
                             required
                             autocomplete="name"
-                            placeholder="Full name"
+                            placeholder="Entrer votre nom complet"
                         />
                         <InputError class="mt-2" :message="errors.name" />
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="email">Email address</Label>
+                        <Label for="email">Adresse email</Label>
                         <Input
+                            :disabled="true"
                             id="email"
                             type="email"
-                            class="mt-1 block w-full"
-                            name="email"
+                            class="mt-1 block w-full bg-white pointer-events-none"
                             :default-value="user.email"
+                            v-model="user.email"
                             required
                             autocomplete="username"
                             placeholder="Email address"
@@ -69,38 +75,29 @@ const user = page.props.auth.user as User;
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">
                         <p class="-mt-4 text-sm text-muted-foreground">
-                            Your email address is unverified.
+                            Votre adresse email n'est pas vérifié.
                             <Link
                                 :href="route('verification.send')"
                                 method="post"
                                 as="button"
                                 class="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                             >
-                                Click here to resend the verification email.
+                                Cliquer pour recevoir le message de vérification à nouveau.
                             </Link>
                         </p>
 
                         <div v-if="status === 'verification-link-sent'" class="mt-2 text-sm font-medium text-green-600">
-                            A new verification link has been sent to your email address.
+                            Un nouveau lien de vérification a été envoyé à votre adresse email.
                         </div>
                     </div>
 
                     <div class="flex items-center gap-4">
-                        <Button :disabled="processing">Save</Button>
-
-                        <Transition
-                            enter-active-class="transition ease-in-out"
-                            enter-from-class="opacity-0"
-                            leave-active-class="transition ease-in-out"
-                            leave-to-class="opacity-0"
-                        >
-                            <p v-show="recentlySuccessful" class="text-sm text-neutral-600">Saved.</p>
-                        </Transition>
+                        <Button variant="default" class="bg-[#0074B8] hover:bg-[#0074B8] hover:opacity-90" :disabled="processing">Enregistrer</Button>
                     </div>
                 </Form>
             </div>
 
-            <DeleteUser />
+            <!-- <DeleteUser /> -->
         </SettingsLayout>
     </AppLayout>
 </template>
