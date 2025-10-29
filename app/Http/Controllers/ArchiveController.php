@@ -48,18 +48,13 @@ class ArchiveController extends Controller
         ]);
 
         $archive->name = $request->name;
+
         if ($request->filled('folder_id')) {
             $archive->folder_id = $request->folder_id;
         }
+
         $archive->save();
 
-        return response()->json([
-            'success' => true,
-            'id' => $archive->id,
-            'name' => $archive->name,
-            'size' => $archive->size,
-            'path' => $archive->path,
-        ]);
     }
 
     /**
